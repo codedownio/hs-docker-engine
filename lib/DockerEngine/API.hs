@@ -249,33 +249,33 @@ instance Produces ContainerChanges MimeJSON
 --
 -- Create a container
 --
-containerCreate
-  :: (Consumes ContainerCreate contentType, MimeRender contentType )
-  => ContentType contentType -- ^ request content-type ('MimeType')
-  -> Accept accept -- ^ request accept ('MimeType')
-  -> body -- ^ "body" -  Container to create
-  -> DockerEngineRequest ContainerCreate contentType InlineResponse201 accept
-containerCreate _  _ body =
-  _mkRequest "POST" ["/containers/create"]
-    `setBodyParam` body
+-- containerCreate
+--   :: (Consumes ContainerCreate contentType, MimeRender contentType )
+--   => ContentType contentType -- ^ request content-type ('MimeType')
+--   -> Accept accept -- ^ request accept ('MimeType')
+--   -> body -- ^ "body" -  Container to create
+--   -> DockerEngineRequest ContainerCreate contentType InlineResponse201 accept
+-- containerCreate _  _ body =
+--   _mkRequest "POST" ["/containers/create"]
+--     `setBodyParam` body
 
-data ContainerCreate
+-- data ContainerCreate
 
--- | /Body Param/ "body" - Container to create
-instance HasBodyParam ContainerCreate
+-- -- | /Body Param/ "body" - Container to create
+-- instance HasBodyParam ContainerCreate
 
--- | /Optional Param/ "name" - Assign the specified name to the container. Must match `/?[a-zA-Z0-9_-]+`.
-instance HasOptionalParam ContainerCreate Name where
-  applyOptionalParam req (Name xs) =
-    req `setQuery` toQuery ("name", Just xs)
+-- -- | /Optional Param/ "name" - Assign the specified name to the container. Must match `/?[a-zA-Z0-9_-]+`.
+-- instance HasOptionalParam ContainerCreate Name where
+--   applyOptionalParam req (Name xs) =
+--     req `setQuery` toQuery ("name", Just xs)
 
--- | @application/json@
-instance Consumes ContainerCreate MimeJSON
--- | @application/octet-stream@
-instance Consumes ContainerCreate MimeOctetStream
+-- -- | @application/json@
+-- instance Consumes ContainerCreate MimeJSON
+-- -- | @application/octet-stream@
+-- instance Consumes ContainerCreate MimeOctetStream
 
--- | @application/json@
-instance Produces ContainerCreate MimeJSON
+-- -- | @application/json@
+-- instance Produces ContainerCreate MimeJSON
 
 
 -- *** containerDelete
@@ -910,25 +910,25 @@ instance Produces ContainerUnpause MimePlainText
 --
 -- Change various configuration options of a container without having to recreate it.
 --
-containerUpdate
-  :: (Consumes ContainerUpdate contentType, MimeRender contentType )
-  => ContentType contentType -- ^ request content-type ('MimeType')
-  -> Accept accept -- ^ request accept ('MimeType')
-  -> Id -- ^ "id" -  ID or name of the container
-  -> update -- ^ "update"
-  -> DockerEngineRequest ContainerUpdate contentType InlineResponse2003 accept
-containerUpdate _  _ (Id id) update =
-  _mkRequest "POST" ["/containers/",toPath id,"/update"]
-    `setBodyParam` update
+-- containerUpdate
+--   :: (Consumes ContainerUpdate contentType, MimeRender contentType )
+--   => ContentType contentType -- ^ request content-type ('MimeType')
+--   -> Accept accept -- ^ request accept ('MimeType')
+--   -> Id -- ^ "id" -  ID or name of the container
+--   -> update -- ^ "update"
+--   -> DockerEngineRequest ContainerUpdate contentType InlineResponse2003 accept
+-- containerUpdate _  _ (Id id) update =
+--   _mkRequest "POST" ["/containers/",toPath id,"/update"]
+--     `setBodyParam` update
 
-data ContainerUpdate
-instance HasBodyParam ContainerUpdate
+-- data ContainerUpdate
+-- instance HasBodyParam ContainerUpdate
 
--- | @application/json@
-instance Consumes ContainerUpdate MimeJSON
+-- -- | @application/json@
+-- instance Consumes ContainerUpdate MimeJSON
 
--- | @application/json@
-instance Produces ContainerUpdate MimeJSON
+-- -- | @application/json@
+-- instance Produces ContainerUpdate MimeJSON
 
 
 -- *** containerWait
@@ -2337,22 +2337,22 @@ instance Produces PluginSet MimePlainText
 --
 -- Create a secret
 --
-secretCreate
-  :: (Consumes SecretCreate contentType)
-  => ContentType contentType -- ^ request content-type ('MimeType')
-  -> Accept accept -- ^ request accept ('MimeType')
-  -> DockerEngineRequest SecretCreate contentType InlineResponse2013 accept
-secretCreate _  _ =
-  _mkRequest "POST" ["/secrets/create"]
+-- secretCreate
+--   :: (Consumes SecretCreate contentType)
+--   => ContentType contentType -- ^ request content-type ('MimeType')
+--   -> Accept accept -- ^ request accept ('MimeType')
+--   -> DockerEngineRequest SecretCreate contentType InlineResponse2013 accept
+-- secretCreate _  _ =
+--   _mkRequest "POST" ["/secrets/create"]
 
-data SecretCreate
-instance HasBodyParam SecretCreate
+-- data SecretCreate
+-- instance HasBodyParam SecretCreate
 
--- | @application/json@
-instance Consumes SecretCreate MimeJSON
+-- -- | @application/json@
+-- instance Consumes SecretCreate MimeJSON
 
--- | @application/json@
-instance Produces SecretCreate MimeJSON
+-- -- | @application/json@
+-- instance Produces SecretCreate MimeJSON
 
 
 -- *** secretDelete
@@ -2441,29 +2441,29 @@ instance Produces SecretList MimeJSON
 --
 -- Create a service
 --
-serviceCreate
-  :: (Consumes ServiceCreate contentType, MimeRender contentType )
-  => ContentType contentType -- ^ request content-type ('MimeType')
-  -> Accept accept -- ^ request accept ('MimeType')
-  -> body -- ^ "body"
-  -> DockerEngineRequest ServiceCreate contentType InlineResponse2012 accept
-serviceCreate _  _ body =
-  _mkRequest "POST" ["/services/create"]
-    `setBodyParam` body
+-- serviceCreate
+--   :: (Consumes ServiceCreate contentType, MimeRender contentType )
+--   => ContentType contentType -- ^ request content-type ('MimeType')
+--   -> Accept accept -- ^ request accept ('MimeType')
+--   -> body -- ^ "body"
+--   -> DockerEngineRequest ServiceCreate contentType InlineResponse2012 accept
+-- serviceCreate _  _ body =
+--   _mkRequest "POST" ["/services/create"]
+--     `setBodyParam` body
 
-data ServiceCreate
-instance HasBodyParam ServiceCreate
+-- data ServiceCreate
+-- instance HasBodyParam ServiceCreate
 
--- | /Optional Param/ "X-Registry-Auth" - A base64-encoded auth configuration for pulling from private registries. [See the authentication section for details.](#section/Authentication)
-instance HasOptionalParam ServiceCreate XRegistryAuth where
-  applyOptionalParam req (XRegistryAuth xs) =
-    req `setHeader` toHeader ("X-Registry-Auth", xs)
+-- -- | /Optional Param/ "X-Registry-Auth" - A base64-encoded auth configuration for pulling from private registries. [See the authentication section for details.](#section/Authentication)
+-- instance HasOptionalParam ServiceCreate XRegistryAuth where
+--   applyOptionalParam req (XRegistryAuth xs) =
+--     req `setHeader` toHeader ("X-Registry-Auth", xs)
 
--- | @application/json@
-instance Consumes ServiceCreate MimeJSON
+-- -- | @application/json@
+-- instance Consumes ServiceCreate MimeJSON
 
--- | @application/json@
-instance Produces ServiceCreate MimeJSON
+-- -- | @application/json@
+-- instance Produces ServiceCreate MimeJSON
 
 
 -- *** serviceDelete
@@ -2619,37 +2619,37 @@ instance Produces ServiceLogs MimeJSON
 --
 -- Update a service
 --
-serviceUpdate
-  :: (Consumes ServiceUpdate contentType, MimeRender contentType )
-  => ContentType contentType -- ^ request content-type ('MimeType')
-  -> Accept accept -- ^ request accept ('MimeType')
-  -> Id -- ^ "id" -  ID or name of service.
-  -> body  -- ^ "body"
-  -> VersionInt -- ^ "version" -  The version number of the service object being updated. This is required to avoid conflicting writes.
-  -> DockerEngineRequest ServiceUpdate contentType ImageDeleteResponse accept
-serviceUpdate _  _ (Id id) body (VersionInt version) =
-  _mkRequest "POST" ["/services/",toPath id,"/update"]
-    `setBodyParam` body
-    `setQuery` toQuery ("version", Just version)
+-- serviceUpdate
+--   :: (Consumes ServiceUpdate contentType, MimeRender contentType )
+--   => ContentType contentType -- ^ request content-type ('MimeType')
+--   -> Accept accept -- ^ request accept ('MimeType')
+--   -> Id -- ^ "id" -  ID or name of service.
+--   -> body  -- ^ "body"
+--   -> VersionInt -- ^ "version" -  The version number of the service object being updated. This is required to avoid conflicting writes.
+--   -> DockerEngineRequest ServiceUpdate contentType ImageDeleteResponse accept
+-- serviceUpdate _  _ (Id id) body (VersionInt version) =
+--   _mkRequest "POST" ["/services/",toPath id,"/update"]
+--     `setBodyParam` body
+--     `setQuery` toQuery ("version", Just version)
 
-data ServiceUpdate
-instance HasBodyParam ServiceUpdate
+-- data ServiceUpdate
+-- instance HasBodyParam ServiceUpdate
 
--- | /Optional Param/ "registryAuthFrom" - If the X-Registry-Auth header is not specified, this parameter indicates where to find registry authorization credentials. The valid values are `spec` and `previous-spec`.
-instance HasOptionalParam ServiceUpdate RegistryAuthFrom where
-  applyOptionalParam req (RegistryAuthFrom xs) =
-    req `setQuery` toQuery ("registryAuthFrom", Just xs)
+-- -- | /Optional Param/ "registryAuthFrom" - If the X-Registry-Auth header is not specified, this parameter indicates where to find registry authorization credentials. The valid values are `spec` and `previous-spec`.
+-- instance HasOptionalParam ServiceUpdate RegistryAuthFrom where
+--   applyOptionalParam req (RegistryAuthFrom xs) =
+--     req `setQuery` toQuery ("registryAuthFrom", Just xs)
 
--- | /Optional Param/ "X-Registry-Auth" - A base64-encoded auth configuration for pulling from private registries. [See the authentication section for details.](#section/Authentication)
-instance HasOptionalParam ServiceUpdate XRegistryAuth where
-  applyOptionalParam req (XRegistryAuth xs) =
-    req `setHeader` toHeader ("X-Registry-Auth", xs)
+-- -- | /Optional Param/ "X-Registry-Auth" - A base64-encoded auth configuration for pulling from private registries. [See the authentication section for details.](#section/Authentication)
+-- instance HasOptionalParam ServiceUpdate XRegistryAuth where
+--   applyOptionalParam req (XRegistryAuth xs) =
+--     req `setHeader` toHeader ("X-Registry-Auth", xs)
 
--- | @application/json@
-instance Consumes ServiceUpdate MimeJSON
+-- -- | @application/json@
+-- instance Consumes ServiceUpdate MimeJSON
 
--- | @application/json@
-instance Produces ServiceUpdate MimeJSON
+-- -- | @application/json@
+-- instance Produces ServiceUpdate MimeJSON
 
 
 -- ** Swarm
