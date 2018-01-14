@@ -1,7 +1,7 @@
 {-
    Docker Engine API
 
-   The Engine API is an HTTP API served by Docker Engine. It is the API the Docker client uses to communicate with the Engine, so everything the Docker client can do can be done with the API.  Most of the client's commands map directly to API endpoints (e.g. `docker ps` is `GET /containers/json`). The notable exception is running containers, which consists of several API calls.  # Errors  The API uses standard HTTP status codes to indicate the success or failure of the API call. The body of the response will be JSON in the following format:  ``` {   \"message\": \"page not found\" } ```  # Versioning  The API is usually changed in each release of Docker, so API calls are versioned to ensure that clients don't break.  For Docker Engine 1.13, the API version is 1.25. To lock to this version, you prefix the URL with `/v1.25`. For example, calling `/info` is the same as calling `/v1.25/info`.  Engine releases in the near future should support this version of the API, so your client will continue to work even if it is talking to a newer Engine.  In previous versions of Docker, it was possible to access the API without providing a version. This behaviour is now deprecated will be removed in a future version of Docker.  The API uses an open schema model, which means server may add extra properties to responses. Likewise, the server will ignore any extra query parameters and request body properties. When you write clients, you need to ignore additional properties in responses to ensure they do not break when talking to newer Docker daemons.  This documentation is for version 1.25 of the API, which was introduced with Docker 1.13. Use this table to find documentation for previous versions of the API:  Docker version  | API version | Changes ----------------|-------------|--------- 1.12.x | [1.24](https://docs.docker.com/engine/api/v1.24/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-24-api-changes) 1.11.x | [1.23](https://docs.docker.com/engine/api/v1.23/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-23-api-changes) 1.10.x | [1.22](https://docs.docker.com/engine/api/v1.22/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-22-api-changes) 1.9.x | [1.21](https://docs.docker.com/engine/api/v1.21/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-21-api-changes) 1.8.x | [1.20](https://docs.docker.com/engine/api/v1.20/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-20-api-changes) 1.7.x | [1.19](https://docs.docker.com/engine/api/v1.19/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-19-api-changes) 1.6.x | [1.18](https://docs.docker.com/engine/api/v1.18/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-18-api-changes)  # Authentication  Authentication for registries is handled client side. The client has to send authentication details to various endpoints that need to communicate with registries, such as `POST /images/(name)/push`. These are sent as `X-Registry-Auth` header as a Base64 encoded (JSON) string with the following structure:  ``` {   \"username\": \"string\",   \"password\": \"string\",   \"email\": \"string\",   \"serveraddress\": \"string\" } ```  The `serveraddress` is a domain/IP without a protocol. Throughout this structure, double quotes are required.  If you have already got an identity token from the [`/auth` endpoint](#operation/SystemAuth), you can just pass this instead of credentials:  ``` {   \"identitytoken\": \"9cbaf023786cd7...\" } ``` 
+   The Engine API is an HTTP API served by Docker Engine. It is the API the Docker client uses to communicate with the Engine, so everything the Docker client can do can be done with the API.  Most of the client's commands map directly to API endpoints (e.g. `docker ps` is `GET /containers/json`). The notable exception is running containers, which consists of several API calls.  # Errors  The API uses standard HTTP status codes to indicate the success or failure of the API call. The body of the response will be JSON in the following format:  ``` {   \"message\": \"page not found\" } ```  # Versioning  The API is usually changed in each release of Docker, so API calls are versioned to ensure that clients don't break.  For Docker Engine 1.13, the API version is 1.25. To lock to this version, you prefix the URL with `/v1.25`. For example, calling `/info` is the same as calling `/v1.25/info`.  Engine releases in the near future should support this version of the API, so your client will continue to work even if it is talking to a newer Engine.  In previous versions of Docker, it was possible to access the API without providing a version. This behaviour is now deprecated will be removed in a future version of Docker.  The API uses an open schema model, which means server may add extra properties to responses. Likewise, the server will ignore any extra query parameters and request body properties. When you write clients, you need to ignore additional properties in responses to ensure they do not break when talking to newer Docker daemons.  This documentation is for version 1.25 of the API, which was introduced with Docker 1.13. Use this table to find documentation for previous versions of the API:  Docker version  | API version | Changes ----------------|-------------|--------- 1.12.x | [1.24](https://docs.docker.com/engine/api/v1.24/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-24-api-changes) 1.11.x | [1.23](https://docs.docker.com/engine/api/v1.23/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-23-api-changes) 1.10.x | [1.22](https://docs.docker.com/engine/api/v1.22/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-22-api-changes) 1.9.x | [1.21](https://docs.docker.com/engine/api/v1.21/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-21-api-changes) 1.8.x | [1.20](https://docs.docker.com/engine/api/v1.20/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-20-api-changes) 1.7.x | [1.19](https://docs.docker.com/engine/api/v1.19/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-19-api-changes) 1.6.x | [1.18](https://docs.docker.com/engine/api/v1.18/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-18-api-changes)  # Authentication  Authentication for registries is handled client side. The client has to send authentication details to various endpoints that need to communicate with registries, such as `POST /images/(name)/push`. These are sent as `X-Registry-Auth` header as a Base64 encoded (JSON) string with the following structure:  ``` {   \"username\": \"string\",   \"password\": \"string\",   \"email\": \"string\",   \"serveraddress\": \"string\" } ```  The `serveraddress` is a domain/IP without a protocol. Throughout this structure, double quotes are required.  If you have already got an identity token from the [`/auth` endpoint](#operation/SystemAuth), you can just pass this instead of credentials:  ``` {   \"identitytoken\": \"9cbaf023786cd7...\" } ```
 
    OpenAPI spec version: 2.0
    Docker Engine API API version: 1.25
@@ -56,8 +56,8 @@ import qualified Network.HTTP.Types as NH
 import qualified Web.FormUrlEncoded as WH
 import qualified Web.HttpApiData as WH
 
-import Data.Monoid ((<>))
 import Data.Function ((&))
+import Data.Monoid ((<>))
 import Data.Text (Text)
 import GHC.Base ((<|>))
 
@@ -72,14 +72,14 @@ import qualified Prelude as P
 -- *** containerArchiveHead
 
 -- | @HEAD \/containers\/{id}\/archive@
--- 
+--
 -- Get information about files in a container
--- 
+--
 -- A response header `X-Docker-Container-Path-Stat` is return containing a base64 - encoded JSON object with some filesystem header information about the path.
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-containerArchiveHead 
+--
+containerArchiveHead
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID or name of the container
   -> Path -- ^ "path" -  Resource in the container’s filesystem to archive.
@@ -88,7 +88,7 @@ containerArchiveHead  _ (Id id) (Path path) =
   _mkRequest "HEAD" ["/containers/",toPath id,"/archive"]
     `setQuery` toQuery ("path", Just path)
 
-data ContainerArchiveHead  
+data ContainerArchiveHead
 
 -- | @application/json@
 instance Consumes ContainerArchiveHead MimeJSON
@@ -104,28 +104,28 @@ instance Produces ContainerArchiveHead MimePlainText
 -- *** containerAttach
 
 -- | @POST \/containers\/{id}\/attach@
--- 
+--
 -- Attach to a container
--- 
--- Attach to a container to read its output or send it input. You can attach to the same container multiple times and you can reattach to containers that have been detached.  Either the `stream` or `logs` parameter must be `true` for this endpoint to do anything.  See [the documentation for the `docker attach` command](https://docs.docker.com/engine/reference/commandline/attach/) for more details.  ### Hijacking  This endpoint hijacks the HTTP connection to transport `stdin`, `stdout`, and `stderr` on the same socket.  This is the response from the daemon for an attach request:  ``` HTTP/1.1 200 OK Content-Type: application/vnd.docker.raw-stream  [STREAM] ```  After the headers and two new lines, the TCP connection can now be used for raw, bidirectional communication between the client and server.  To hint potential proxies about connection hijacking, the Docker client can also optionally send connection upgrade headers.  For example, the client sends this request to upgrade the connection:  ``` POST /containers/16253994b7c4/attach?stream=1&stdout=1 HTTP/1.1 Upgrade: tcp Connection: Upgrade ```  The Docker daemon will respond with a `101 UPGRADED` response, and will similarly follow with the raw stream:  ``` HTTP/1.1 101 UPGRADED Content-Type: application/vnd.docker.raw-stream Connection: Upgrade Upgrade: tcp  [STREAM] ```  ### Stream format  When the TTY setting is disabled in [`POST /containers/create`](#operation/ContainerCreate), the stream over the hijacked connected is multiplexed to separate out `stdout` and `stderr`. The stream consists of a series of frames, each containing a header and a payload.  The header contains the information which the stream writes (`stdout` or `stderr`). It also contains the size of the associated frame encoded in the last four bytes (`uint32`).  It is encoded on the first eight bytes like this:  ```go header := [8]byte{STREAM_TYPE, 0, 0, 0, SIZE1, SIZE2, SIZE3, SIZE4} ```  `STREAM_TYPE` can be:  - 0: `stdin` (is written on `stdout`) - 1: `stdout` - 2: `stderr`  `SIZE1, SIZE2, SIZE3, SIZE4` are the four bytes of the `uint32` size encoded as big endian.  Following the header is the payload, which is the specified number of bytes of `STREAM_TYPE`.  The simplest way to implement this protocol is the following:  1. Read 8 bytes. 2. Choose `stdout` or `stderr` depending on the first byte. 3. Extract the frame size from the last four bytes. 4. Read the extracted size and output it on the correct output. 5. Goto 1.  ### Stream format when using a TTY  When the TTY setting is enabled in [`POST /containers/create`](#operation/ContainerCreate), the stream is not multiplexed. The data exchanged over the hijacked connection is simply the raw data from the process PTY and client's `stdin`. 
--- 
+--
+-- Attach to a container to read its output or send it input. You can attach to the same container multiple times and you can reattach to containers that have been detached.  Either the `stream` or `logs` parameter must be `true` for this endpoint to do anything.  See [the documentation for the `docker attach` command](https://docs.docker.com/engine/reference/commandline/attach/) for more details.  ### Hijacking  This endpoint hijacks the HTTP connection to transport `stdin`, `stdout`, and `stderr` on the same socket.  This is the response from the daemon for an attach request:  ``` HTTP/1.1 200 OK Content-Type: application/vnd.docker.raw-stream  [STREAM] ```  After the headers and two new lines, the TCP connection can now be used for raw, bidirectional communication between the client and server.  To hint potential proxies about connection hijacking, the Docker client can also optionally send connection upgrade headers.  For example, the client sends this request to upgrade the connection:  ``` POST /containers/16253994b7c4/attach?stream=1&stdout=1 HTTP/1.1 Upgrade: tcp Connection: Upgrade ```  The Docker daemon will respond with a `101 UPGRADED` response, and will similarly follow with the raw stream:  ``` HTTP/1.1 101 UPGRADED Content-Type: application/vnd.docker.raw-stream Connection: Upgrade Upgrade: tcp  [STREAM] ```  ### Stream format  When the TTY setting is disabled in [`POST /containers/create`](#operation/ContainerCreate), the stream over the hijacked connected is multiplexed to separate out `stdout` and `stderr`. The stream consists of a series of frames, each containing a header and a payload.  The header contains the information which the stream writes (`stdout` or `stderr`). It also contains the size of the associated frame encoded in the last four bytes (`uint32`).  It is encoded on the first eight bytes like this:  ```go header := [8]byte{STREAM_TYPE, 0, 0, 0, SIZE1, SIZE2, SIZE3, SIZE4} ```  `STREAM_TYPE` can be:  - 0: `stdin` (is written on `stdout`) - 1: `stdout` - 2: `stderr`  `SIZE1, SIZE2, SIZE3, SIZE4` are the four bytes of the `uint32` size encoded as big endian.  Following the header is the payload, which is the specified number of bytes of `STREAM_TYPE`.  The simplest way to implement this protocol is the following:  1. Read 8 bytes. 2. Choose `stdout` or `stderr` depending on the first byte. 3. Extract the frame size from the last four bytes. 4. Read the extracted size and output it on the correct output. 5. Goto 1.  ### Stream format when using a TTY  When the TTY setting is enabled in [`POST /containers/create`](#operation/ContainerCreate), the stream is not multiplexed. The data exchanged over the hijacked connection is simply the raw data from the process PTY and client's `stdin`.
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-containerAttach 
+--
+containerAttach
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID or name of the container
   -> DockerEngineRequest ContainerAttach MimeNoContent res accept
 containerAttach  _ (Id id) =
   _mkRequest "POST" ["/containers/",toPath id,"/attach"]
 
-data ContainerAttach  
+data ContainerAttach
 
 -- | /Optional Param/ "detachKeys" - Override the key sequence for detaching a container.Format is a single character `[a-Z]` or `ctrl-<value>` where `<value>` is one of: `a-z`, `@`, `^`, `[`, `,` or `_`.
 instance HasOptionalParam ContainerAttach DetachKeys where
   applyOptionalParam req (DetachKeys xs) =
     req `setQuery` toQuery ("detachKeys", Just xs)
 
--- | /Optional Param/ "logs" - Replay previous logs from the container.  This is useful for attaching to a container that has started and you want to output everything since the container started.  If `stream` is also enabled, once all the previous output has been returned, it will seamlessly transition into streaming current output. 
+-- | /Optional Param/ "logs" - Replay previous logs from the container.  This is useful for attaching to a container that has started and you want to output everything since the container started.  If `stream` is also enabled, once all the previous output has been returned, it will seamlessly transition into streaming current output.
 instance HasOptionalParam ContainerAttach Logs where
   applyOptionalParam req (Logs xs) =
     req `setQuery` toQuery ("logs", Just xs)
@@ -162,19 +162,19 @@ instance Produces ContainerAttach MimeVndDockerRawStream
 -- *** containerAttachWebsocket
 
 -- | @GET \/containers\/{id}\/attach\/ws@
--- 
+--
 -- Attach to a container via a websocket
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-containerAttachWebsocket 
+--
+containerAttachWebsocket
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID or name of the container
   -> DockerEngineRequest ContainerAttachWebsocket MimeNoContent res accept
 containerAttachWebsocket  _ (Id id) =
   _mkRequest "GET" ["/containers/",toPath id,"/attach/ws"]
 
-data ContainerAttachWebsocket  
+data ContainerAttachWebsocket
 
 -- | /Optional Param/ "detachKeys" - Override the key sequence for detaching a container.Format is a single character `[a-Z]` or `ctrl-<value>` where `<value>` is one of: `a-z`, `@`, `^`, `[`, `,`, or `_`.
 instance HasOptionalParam ContainerAttachWebsocket DetachKeys where
@@ -220,19 +220,19 @@ instance Produces ContainerAttachWebsocket MimePlainText
 -- *** containerChanges
 
 -- | @GET \/containers\/{id}\/changes@
--- 
+--
 -- Get changes on a container’s filesystem
--- 
--- Returns which files in a container's filesystem have been added, deleted, or modified. The `Kind` of modification can be one of:  - `0`: Modified - `1`: Added - `2`: Deleted 
--- 
-containerChanges 
+--
+-- Returns which files in a container's filesystem have been added, deleted, or modified. The `Kind` of modification can be one of:  - `0`: Modified - `1`: Added - `2`: Deleted
+--
+containerChanges
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID or name of the container
   -> DockerEngineRequest ContainerChanges MimeNoContent [InlineResponse2002] accept
 containerChanges  _ (Id id) =
   _mkRequest "GET" ["/containers/",toPath id,"/changes"]
 
-data ContainerChanges  
+data ContainerChanges
 
 -- | @application/json@
 instance Consumes ContainerChanges MimeJSON
@@ -246,23 +246,23 @@ instance Produces ContainerChanges MimeJSON
 -- *** containerCreate
 
 -- | @POST \/containers\/create@
--- 
+--
 -- Create a container
--- 
-containerCreate 
+--
+containerCreate
   :: (Consumes ContainerCreate contentType, MimeRender contentType )
   => ContentType contentType -- ^ request content-type ('MimeType')
   -> Accept accept -- ^ request accept ('MimeType')
-  ->  -- ^ "body" -  Container to create
+  -> body -- ^ "body" -  Container to create
   -> DockerEngineRequest ContainerCreate contentType InlineResponse201 accept
 containerCreate _  _ body =
   _mkRequest "POST" ["/containers/create"]
     `setBodyParam` body
 
-data ContainerCreate 
+data ContainerCreate
 
 -- | /Body Param/ "body" - Container to create
-instance HasBodyParam ContainerCreate  
+instance HasBodyParam ContainerCreate
 
 -- | /Optional Param/ "name" - Assign the specified name to the container. Must match `/?[a-zA-Z0-9_-]+`.
 instance HasOptionalParam ContainerCreate Name where
@@ -281,19 +281,19 @@ instance Produces ContainerCreate MimeJSON
 -- *** containerDelete
 
 -- | @DELETE \/containers\/{id}@
--- 
+--
 -- Remove a container
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-containerDelete 
+--
+containerDelete
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID or name of the container
   -> DockerEngineRequest ContainerDelete MimeNoContent res accept
 containerDelete  _ (Id id) =
   _mkRequest "DELETE" ["/containers/",toPath id]
 
-data ContainerDelete  
+data ContainerDelete
 
 -- | /Optional Param/ "v" - Remove the volumes associated with the container.
 instance HasOptionalParam ContainerDelete V where
@@ -319,21 +319,21 @@ instance Produces ContainerDelete MimePlainText
 -- *** containerExport
 
 -- | @GET \/containers\/{id}\/export@
--- 
+--
 -- Export a container
--- 
+--
 -- Export the contents of a container as a tarball.
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-containerExport 
+--
+containerExport
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID or name of the container
   -> DockerEngineRequest ContainerExport MimeNoContent res accept
 containerExport  _ (Id id) =
   _mkRequest "GET" ["/containers/",toPath id,"/export"]
 
-data ContainerExport  
+data ContainerExport
 
 -- | @application/json@
 instance Consumes ContainerExport MimeJSON
@@ -347,14 +347,14 @@ instance Produces ContainerExport MimeOctetStream
 -- *** containerGetArchive
 
 -- | @GET \/containers\/{id}\/archive@
--- 
+--
 -- Get an archive of a filesystem resource in a container
--- 
+--
 -- Get an tar archive of a resource in the filesystem of container id.
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-containerGetArchive 
+--
+containerGetArchive
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID or name of the container
   -> Path -- ^ "path" -  Resource in the container’s filesystem to archive.
@@ -363,7 +363,7 @@ containerGetArchive  _ (Id id) (Path path) =
   _mkRequest "GET" ["/containers/",toPath id,"/archive"]
     `setQuery` toQuery ("path", Just path)
 
-data ContainerGetArchive  
+data ContainerGetArchive
 
 -- | @application/json@
 instance Consumes ContainerGetArchive MimeJSON
@@ -377,19 +377,19 @@ instance Produces ContainerGetArchive MimeXTar
 -- *** containerInspect
 
 -- | @GET \/containers\/{id}\/json@
--- 
+--
 -- Inspect a container
--- 
+--
 -- Return low-level information about a container.
--- 
-containerInspect 
+--
+containerInspect
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID or name of the container
   -> DockerEngineRequest ContainerInspect MimeNoContent InlineResponse200 accept
 containerInspect  _ (Id id) =
   _mkRequest "GET" ["/containers/",toPath id,"/json"]
 
-data ContainerInspect  
+data ContainerInspect
 
 -- | /Optional Param/ "size" - Return the size of container as fields `SizeRw` and `SizeRootFs`
 instance HasOptionalParam ContainerInspect Size where
@@ -408,21 +408,21 @@ instance Produces ContainerInspect MimeJSON
 -- *** containerKill
 
 -- | @POST \/containers\/{id}\/kill@
--- 
+--
 -- Kill a container
--- 
+--
 -- Send a POSIX signal to a container, defaulting to killing to the container.
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-containerKill 
+--
+containerKill
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID or name of the container
   -> DockerEngineRequest ContainerKill MimeNoContent res accept
 containerKill  _ (Id id) =
   _mkRequest "POST" ["/containers/",toPath id,"/kill"]
 
-data ContainerKill  
+data ContainerKill
 
 -- | /Optional Param/ "signal" - Signal to send to the container as an integer or string (e.g. `SIGINT`)
 instance HasOptionalParam ContainerKill Signal where
@@ -443,16 +443,16 @@ instance Produces ContainerKill MimePlainText
 -- *** containerList
 
 -- | @GET \/containers\/json@
--- 
+--
 -- List containers
--- 
-containerList 
+--
+containerList
   :: Accept accept -- ^ request accept ('MimeType')
   -> DockerEngineRequest ContainerList MimeNoContent ContainerSummary accept
 containerList  _ =
   _mkRequest "GET" ["/containers/json"]
 
-data ContainerList  
+data ContainerList
 
 -- | /Optional Param/ "all" - Return all containers. By default, only running containers are shown
 instance HasOptionalParam ContainerList All where
@@ -469,7 +469,7 @@ instance HasOptionalParam ContainerList Size where
   applyOptionalParam req (Size xs) =
     req `setQuery` toQuery ("size", Just xs)
 
--- | /Optional Param/ "filters" - Filters to process on the container list, encoded as JSON (a `map[string][]string`). For example, `{\"status\": [\"paused\"]}` will only return paused containers.  Available filters: - `exited=<int>` containers with exit code of `<int>` - `status=`(`created`|`restarting`|`running`|`removing`|`paused`|`exited`|`dead`) - `label=key` or `label=\"key=value\"` of a container label - `isolation=`(`default`|`process`|`hyperv`) (Windows daemon only) - `id=<ID>` a container's ID - `name=<name>` a container's name - `is-task=`(`true`|`false`) - `ancestor`=(`<image-name>[:<tag>]`, `<image id>`, or `<image@digest>`) - `before`=(`<container id>` or `<container name>`) - `since`=(`<container id>` or `<container name>`) - `volume`=(`<volume name>` or `<mount point destination>`) - `network`=(`<network id>` or `<network name>`) - `health`=(`starting`|`healthy`|`unhealthy`|`none`) 
+-- | /Optional Param/ "filters" - Filters to process on the container list, encoded as JSON (a `map[string][]string`). For example, `{\"status\": [\"paused\"]}` will only return paused containers.  Available filters: - `exited=<int>` containers with exit code of `<int>` - `status=`(`created`|`restarting`|`running`|`removing`|`paused`|`exited`|`dead`) - `label=key` or `label=\"key=value\"` of a container label - `isolation=`(`default`|`process`|`hyperv`) (Windows daemon only) - `id=<ID>` a container's ID - `name=<name>` a container's name - `is-task=`(`true`|`false`) - `ancestor`=(`<image-name>[:<tag>]`, `<image id>`, or `<image@digest>`) - `before`=(`<container id>` or `<container name>`) - `since`=(`<container id>` or `<container name>`) - `volume`=(`<volume name>` or `<mount point destination>`) - `network`=(`<network id>` or `<network name>`) - `health`=(`starting`|`healthy`|`unhealthy`|`none`)
 instance HasOptionalParam ContainerList Filters where
   applyOptionalParam req (Filters xs) =
     req `setQuery` toQuery ("filters", Just xs)
@@ -486,21 +486,21 @@ instance Produces ContainerList MimeJSON
 -- *** containerLogs
 
 -- | @GET \/containers\/{id}\/logs@
--- 
+--
 -- Get container logs
--- 
--- Get `stdout` and `stderr` logs from a container.  Note: This endpoint works only for containers with the `json-file` or `journald` logging driver. 
--- 
-containerLogs 
+--
+-- Get `stdout` and `stderr` logs from a container.  Note: This endpoint works only for containers with the `json-file` or `journald` logging driver.
+--
+containerLogs
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID or name of the container
   -> DockerEngineRequest ContainerLogs MimeNoContent Text accept
 containerLogs  _ (Id id) =
   _mkRequest "GET" ["/containers/",toPath id,"/logs"]
 
-data ContainerLogs  
+data ContainerLogs
 
--- | /Optional Param/ "follow" - Return the logs as a stream.  This will return a `101` HTTP response with a `Connection: upgrade` header, then hijack the HTTP connection to send raw output. For more information about hijacking and the stream format, [see the documentation for the attach endpoint](#operation/ContainerAttach). 
+-- | /Optional Param/ "follow" - Return the logs as a stream.  This will return a `101` HTTP response with a `Connection: upgrade` header, then hijack the HTTP connection to send raw output. For more information about hijacking and the stream format, [see the documentation for the attach endpoint](#operation/ContainerAttach).
 instance HasOptionalParam ContainerLogs Follow where
   applyOptionalParam req (Follow xs) =
     req `setQuery` toQuery ("follow", Just xs)
@@ -544,21 +544,21 @@ instance Produces ContainerLogs MimePlainText
 -- *** containerPause
 
 -- | @POST \/containers\/{id}\/pause@
--- 
+--
 -- Pause a container
--- 
--- Use the cgroups freezer to suspend all processes in a container.  Traditionally, when suspending a process the `SIGSTOP` signal is used, which is observable by the process being suspended. With the cgroups freezer the process is unaware, and unable to capture, that it is being suspended, and subsequently resumed. 
--- 
+--
+-- Use the cgroups freezer to suspend all processes in a container.  Traditionally, when suspending a process the `SIGSTOP` signal is used, which is observable by the process being suspended. With the cgroups freezer the process is unaware, and unable to capture, that it is being suspended, and subsequently resumed.
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-containerPause 
+--
+containerPause
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID or name of the container
   -> DockerEngineRequest ContainerPause MimeNoContent res accept
 containerPause  _ (Id id) =
   _mkRequest "POST" ["/containers/",toPath id,"/pause"]
 
-data ContainerPause  
+data ContainerPause
 
 -- | @application/json@
 instance Consumes ContainerPause MimeJSON
@@ -574,18 +574,18 @@ instance Produces ContainerPause MimePlainText
 -- *** containerPrune
 
 -- | @POST \/containers\/prune@
--- 
+--
 -- Delete stopped containers
--- 
-containerPrune 
+--
+containerPrune
   :: Accept accept -- ^ request accept ('MimeType')
   -> DockerEngineRequest ContainerPrune MimeNoContent InlineResponse2005 accept
 containerPrune  _ =
   _mkRequest "POST" ["/containers/prune"]
 
-data ContainerPrune  
+data ContainerPrune
 
--- | /Optional Param/ "filters" - Filters to process on the prune list, encoded as JSON (a `map[string][]string`).  Available filters: 
+-- | /Optional Param/ "filters" - Filters to process on the prune list, encoded as JSON (a `map[string][]string`).  Available filters:
 instance HasOptionalParam ContainerPrune Filters where
   applyOptionalParam req (Filters xs) =
     req `setQuery` toQuery ("filters", Just xs)
@@ -602,19 +602,19 @@ instance Produces ContainerPrune MimeJSON
 -- *** containerPutArchive
 
 -- | @PUT \/containers\/{id}\/archive@
--- 
+--
 -- Extract an archive of files or folders to a directory in a container
--- 
+--
 -- Upload a tar archive to be extracted to a path in the filesystem of container id.
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-containerPutArchive 
+--
+containerPutArchive
   :: (Consumes ContainerPutArchive contentType, MimeRender contentType InputStream2)
   => ContentType contentType -- ^ request content-type ('MimeType')
   -> Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID or name of the container
-  -> Path -- ^ "path" -  Path to a directory in the container to extract the archive’s contents into. 
+  -> Path -- ^ "path" -  Path to a directory in the container to extract the archive’s contents into.
   -> InputStream2 -- ^ "inputStream" -  The input stream must be a tar archive compressed with one of the following algorithms: identity (no compression), gzip, bzip2, xz.
   -> DockerEngineRequest ContainerPutArchive contentType res accept
 containerPutArchive _  _ (Id id) (Path path) inputStream =
@@ -622,10 +622,10 @@ containerPutArchive _  _ (Id id) (Path path) inputStream =
     `setQuery` toQuery ("path", Just path)
     `setBodyParam` inputStream
 
-data ContainerPutArchive 
+data ContainerPutArchive
 
 -- | /Body Param/ "inputStream" - The input stream must be a tar archive compressed with one of the following algorithms: identity (no compression), gzip, bzip2, xz.
-instance HasBodyParam ContainerPutArchive InputStream2 
+instance HasBodyParam ContainerPutArchive InputStream2
 
 -- | /Optional Param/ "noOverwriteDirNonDir" - If “1”, “true”, or “True” then it will be an error if unpacking the given content would cause an existing directory to be replaced with a non-directory and vice versa.
 instance HasOptionalParam ContainerPutArchive NoOverwriteDirNonDir where
@@ -646,12 +646,12 @@ instance Produces ContainerPutArchive MimePlainText
 -- *** containerRename
 
 -- | @POST \/containers\/{id}\/rename@
--- 
+--
 -- Rename a container
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-containerRename 
+--
+containerRename
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID or name of the container
   -> Name -- ^ "name" -  New name for the container
@@ -660,7 +660,7 @@ containerRename  _ (Id id) (Name name) =
   _mkRequest "POST" ["/containers/",toPath id,"/rename"]
     `setQuery` toQuery ("name", Just name)
 
-data ContainerRename  
+data ContainerRename
 
 -- | @application/json@
 instance Consumes ContainerRename MimeJSON
@@ -676,21 +676,21 @@ instance Produces ContainerRename MimePlainText
 -- *** containerResize
 
 -- | @POST \/containers\/{id}\/resize@
--- 
+--
 -- Resize a container TTY
--- 
+--
 -- Resize the TTY for a container. You must restart the container for the resize to take effect.
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-containerResize 
+--
+containerResize
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID or name of the container
   -> DockerEngineRequest ContainerResize MimeNoContent res accept
 containerResize  _ (Id id) =
   _mkRequest "POST" ["/containers/",toPath id,"/resize"]
 
-data ContainerResize  
+data ContainerResize
 
 -- | /Optional Param/ "h" - Height of the tty session in characters
 instance HasOptionalParam ContainerResize H where
@@ -712,19 +712,19 @@ instance Produces ContainerResize MimePlainText
 -- *** containerRestart
 
 -- | @POST \/containers\/{id}\/restart@
--- 
+--
 -- Restart a container
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-containerRestart 
+--
+containerRestart
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID or name of the container
   -> DockerEngineRequest ContainerRestart MimeNoContent res accept
 containerRestart  _ (Id id) =
   _mkRequest "POST" ["/containers/",toPath id,"/restart"]
 
-data ContainerRestart  
+data ContainerRestart
 
 -- | /Optional Param/ "t" - Number of seconds to wait before killing the container
 instance HasOptionalParam ContainerRestart T where
@@ -745,19 +745,19 @@ instance Produces ContainerRestart MimePlainText
 -- *** containerStart
 
 -- | @POST \/containers\/{id}\/start@
--- 
+--
 -- Start a container
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-containerStart 
+--
+containerStart
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID or name of the container
   -> DockerEngineRequest ContainerStart MimeNoContent res accept
 containerStart  _ (Id id) =
   _mkRequest "POST" ["/containers/",toPath id,"/start"]
 
-data ContainerStart  
+data ContainerStart
 
 -- | /Optional Param/ "detachKeys" - Override the key sequence for detaching a container. Format is a single character `[a-Z]` or `ctrl-<value>` where `<value>` is one of: `a-z`, `@`, `^`, `[`, `,` or `_`.
 instance HasOptionalParam ContainerStart DetachKeys where
@@ -778,19 +778,19 @@ instance Produces ContainerStart MimePlainText
 -- *** containerStats
 
 -- | @GET \/containers\/{id}\/stats@
--- 
+--
 -- Get container stats based on resource usage
--- 
--- This endpoint returns a live stream of a container’s resource usage statistics.  The `precpu_stats` is the CPU statistic of last read, which is used for calculating the CPU usage percentage. It is not the same as the `cpu_stats` field. 
--- 
-containerStats 
+--
+-- This endpoint returns a live stream of a container’s resource usage statistics.  The `precpu_stats` is the CPU statistic of last read, which is used for calculating the CPU usage percentage. It is not the same as the `cpu_stats` field.
+--
+containerStats
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID or name of the container
   -> DockerEngineRequest ContainerStats MimeNoContent A.Value accept
 containerStats  _ (Id id) =
   _mkRequest "GET" ["/containers/",toPath id,"/stats"]
 
-data ContainerStats  
+data ContainerStats
 
 -- | /Optional Param/ "stream" - Stream the output. If false, the stats will be output once and then it will disconnect.
 instance HasOptionalParam ContainerStats Stream where
@@ -809,19 +809,19 @@ instance Produces ContainerStats MimeJSON
 -- *** containerStop
 
 -- | @POST \/containers\/{id}\/stop@
--- 
+--
 -- Stop a container
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-containerStop 
+--
+containerStop
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID or name of the container
   -> DockerEngineRequest ContainerStop MimeNoContent res accept
 containerStop  _ (Id id) =
   _mkRequest "POST" ["/containers/",toPath id,"/stop"]
 
-data ContainerStop  
+data ContainerStop
 
 -- | /Optional Param/ "t" - Number of seconds to wait before killing the container
 instance HasOptionalParam ContainerStop T where
@@ -842,19 +842,19 @@ instance Produces ContainerStop MimePlainText
 -- *** containerTop
 
 -- | @GET \/containers\/{id}\/top@
--- 
+--
 -- List processes running inside a container
--- 
+--
 -- On Unix systems, this is done by running the `ps` command. This endpoint is not supported on Windows.
--- 
-containerTop 
+--
+containerTop
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID or name of the container
   -> DockerEngineRequest ContainerTop MimeNoContent InlineResponse2001 accept
 containerTop  _ (Id id) =
   _mkRequest "GET" ["/containers/",toPath id,"/top"]
 
-data ContainerTop  
+data ContainerTop
 
 -- | /Optional Param/ "ps_args" - The arguments to pass to `ps`. For example, `aux`
 instance HasOptionalParam ContainerTop PsArgs where
@@ -875,21 +875,21 @@ instance Produces ContainerTop MimePlainText
 -- *** containerUnpause
 
 -- | @POST \/containers\/{id}\/unpause@
--- 
+--
 -- Unpause a container
--- 
+--
 -- Resume a container which has been paused.
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-containerUnpause 
+--
+containerUnpause
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID or name of the container
   -> DockerEngineRequest ContainerUnpause MimeNoContent res accept
 containerUnpause  _ (Id id) =
   _mkRequest "POST" ["/containers/",toPath id,"/unpause"]
 
-data ContainerUnpause  
+data ContainerUnpause
 
 -- | @application/json@
 instance Consumes ContainerUnpause MimeJSON
@@ -905,24 +905,24 @@ instance Produces ContainerUnpause MimePlainText
 -- *** containerUpdate
 
 -- | @POST \/containers\/{id}\/update@
--- 
+--
 -- Update a container
--- 
+--
 -- Change various configuration options of a container without having to recreate it.
--- 
-containerUpdate 
+--
+containerUpdate
   :: (Consumes ContainerUpdate contentType, MimeRender contentType )
   => ContentType contentType -- ^ request content-type ('MimeType')
   -> Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID or name of the container
-  ->  -- ^ "update"
+  -> update -- ^ "update"
   -> DockerEngineRequest ContainerUpdate contentType InlineResponse2003 accept
 containerUpdate _  _ (Id id) update =
   _mkRequest "POST" ["/containers/",toPath id,"/update"]
     `setBodyParam` update
 
-data ContainerUpdate 
-instance HasBodyParam ContainerUpdate  
+data ContainerUpdate
+instance HasBodyParam ContainerUpdate
 
 -- | @application/json@
 instance Consumes ContainerUpdate MimeJSON
@@ -934,19 +934,19 @@ instance Produces ContainerUpdate MimeJSON
 -- *** containerWait
 
 -- | @POST \/containers\/{id}\/wait@
--- 
+--
 -- Wait for a container
--- 
+--
 -- Block until a container stops, then returns the exit code.
--- 
-containerWait 
+--
+containerWait
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID or name of the container
   -> DockerEngineRequest ContainerWait MimeNoContent InlineResponse2004 accept
 containerWait  _ (Id id) =
   _mkRequest "POST" ["/containers/",toPath id,"/wait"]
 
-data ContainerWait  
+data ContainerWait
 
 -- | @application/json@
 instance Consumes ContainerWait MimeJSON
@@ -962,12 +962,12 @@ instance Produces ContainerWait MimeJSON
 -- *** containerExec
 
 -- | @POST \/containers\/{id}\/exec@
--- 
+--
 -- Create an exec instance
--- 
+--
 -- Run a command inside a running container.
--- 
-containerExec 
+--
+containerExec
   :: (Consumes ContainerExec contentType, MimeRender contentType ExecConfig)
   => ContentType contentType -- ^ request content-type ('MimeType')
   -> Accept accept -- ^ request accept ('MimeType')
@@ -978,10 +978,10 @@ containerExec _  _ execConfig (Id id) =
   _mkRequest "POST" ["/containers/",toPath id,"/exec"]
     `setBodyParam` execConfig
 
-data ContainerExec 
+data ContainerExec
 
 -- | /Body Param/ "execConfig" - Exec configuration
-instance HasBodyParam ContainerExec ExecConfig 
+instance HasBodyParam ContainerExec ExecConfig
 
 -- | @application/json@
 instance Consumes ContainerExec MimeJSON
@@ -993,19 +993,19 @@ instance Produces ContainerExec MimeJSON
 -- *** execInspect
 
 -- | @GET \/exec\/{id}\/json@
--- 
+--
 -- Inspect an exec instance
--- 
+--
 -- Return low-level information about an exec instance.
--- 
-execInspect 
+--
+execInspect
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  Exec instance ID
   -> DockerEngineRequest ExecInspect MimeNoContent InlineResponse20014 accept
 execInspect  _ (Id id) =
   _mkRequest "GET" ["/exec/",toPath id,"/json"]
 
-data ExecInspect  
+data ExecInspect
 
 -- | @application/json@
 instance Consumes ExecInspect MimeJSON
@@ -1019,21 +1019,21 @@ instance Produces ExecInspect MimeJSON
 -- *** execResize
 
 -- | @POST \/exec\/{id}\/resize@
--- 
+--
 -- Resize an exec instance
--- 
+--
 -- Resize the TTY session used by an exec instance. This endpoint only works if `tty` was specified as part of creating and starting the exec instance.
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-execResize 
+--
+execResize
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  Exec instance ID
   -> DockerEngineRequest ExecResize MimeNoContent res accept
 execResize  _ (Id id) =
   _mkRequest "POST" ["/exec/",toPath id,"/resize"]
 
-data ExecResize  
+data ExecResize
 
 -- | /Optional Param/ "h" - Height of the TTY session in characters
 instance HasOptionalParam ExecResize H where
@@ -1059,14 +1059,14 @@ instance Produces ExecResize MimePlainText
 -- *** execStart
 
 -- | @POST \/exec\/{id}\/start@
--- 
+--
 -- Start an exec instance
--- 
+--
 -- Starts a previously set up exec instance. If detach is true, this endpoint returns immediately after starting the command. Otherwise, it sets up an interactive session with the command.
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-execStart 
+--
+execStart
   :: (Consumes ExecStart contentType)
   => ContentType contentType -- ^ request content-type ('MimeType')
   -> Accept accept -- ^ request accept ('MimeType')
@@ -1075,8 +1075,8 @@ execStart
 execStart _  _ (Id id) =
   _mkRequest "POST" ["/exec/",toPath id,"/start"]
 
-data ExecStart 
-instance HasBodyParam ExecStart ExecStartConfig 
+data ExecStart
+instance HasBodyParam ExecStart ExecStartConfig
 
 -- | @application/json@
 instance Consumes ExecStart MimeJSON
@@ -1090,14 +1090,14 @@ instance Produces ExecStart MimeVndDockerRawStream
 -- *** imageBuild
 
 -- | @POST \/build@
--- 
+--
 -- Build an image
--- 
--- Build an image from a tar archive with a `Dockerfile` in it.  The `Dockerfile` specifies how the image is built from the tar archive. It is typically in the archive's root, but can be at a different path or have a different name by specifying the `dockerfile` parameter. [See the `Dockerfile` reference for more information](https://docs.docker.com/engine/reference/builder/).  The Docker daemon performs a preliminary validation of the `Dockerfile` before starting the build, and returns an error if the syntax is incorrect. After that, each instruction is run one-by-one until the ID of the new image is output.  The build is canceled if the client drops the connection by quitting or being killed. 
--- 
+--
+-- Build an image from a tar archive with a `Dockerfile` in it.  The `Dockerfile` specifies how the image is built from the tar archive. It is typically in the archive's root, but can be at a different path or have a different name by specifying the `dockerfile` parameter. [See the `Dockerfile` reference for more information](https://docs.docker.com/engine/reference/builder/).  The Docker daemon performs a preliminary validation of the `Dockerfile` before starting the build, and returns an error if the syntax is incorrect. After that, each instruction is run one-by-one until the ID of the new image is output.  The build is canceled if the client drops the connection by quitting or being killed.
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-imageBuild 
+--
+imageBuild
   :: (Consumes ImageBuild contentType)
   => ContentType contentType -- ^ request content-type ('MimeType')
   -> Accept accept -- ^ request accept ('MimeType')
@@ -1105,10 +1105,10 @@ imageBuild
 imageBuild _  _ =
   _mkRequest "POST" ["/build"]
 
-data ImageBuild 
+data ImageBuild
 
 -- | /Body Param/ "inputStream" - A tar archive compressed with one of the following algorithms: identity (no compression), gzip, bzip2, xz.
-instance HasBodyParam ImageBuild InputStream4 
+instance HasBodyParam ImageBuild InputStream4
 
 -- | /Optional Param/ "dockerfile" - Path within the build context to the `Dockerfile`. This is ignored if `remote` is specified and points to an external `Dockerfile`.
 instance HasOptionalParam ImageBuild Dockerfile where
@@ -1213,7 +1213,7 @@ instance HasOptionalParam ImageBuild ParamContentType where
   applyOptionalParam req (ParamContentType xs) =
     req `setHeader` toHeader ("Content-type", xs)
 
--- | /Optional Param/ "X-Registry-Config" - This is a base64-encoded JSON object with auth configurations for multiple registries that a build may refer to.  The key is a registry URL, and the value is an auth configuration object, [as described in the authentication section](#section/Authentication). For example:  ``` {   \"docker.example.com\": {     \"username\": \"janedoe\",     \"password\": \"hunter2\"   },   \"https://index.docker.io/v1/\": {     \"username\": \"mobydock\",     \"password\": \"conta1n3rize14\"   } } ```  Only the registry domain name (and port if not the default 443) are required. However, for legacy reasons, the Docker Hub registry must be specified with both a `https://` prefix and a `/v1/` suffix even though Docker will prefer to use the v2 registry API. 
+-- | /Optional Param/ "X-Registry-Config" - This is a base64-encoded JSON object with auth configurations for multiple registries that a build may refer to.  The key is a registry URL, and the value is an auth configuration object, [as described in the authentication section](#section/Authentication). For example:  ``` {   \"docker.example.com\": {     \"username\": \"janedoe\",     \"password\": \"hunter2\"   },   \"https://index.docker.io/v1/\": {     \"username\": \"mobydock\",     \"password\": \"conta1n3rize14\"   } } ```  Only the registry domain name (and port if not the default 443) are required. However, for legacy reasons, the Docker Hub registry must be specified with both a `https://` prefix and a `/v1/` suffix even though Docker will prefer to use the v2 registry API.
 instance HasOptionalParam ImageBuild XRegistryConfig where
   applyOptionalParam req (XRegistryConfig xs) =
     req `setHeader` toHeader ("X-Registry-Config", xs)
@@ -1228,10 +1228,10 @@ instance Produces ImageBuild MimeJSON
 -- *** imageCommit
 
 -- | @POST \/commit@
--- 
+--
 -- Create a new image from a container
--- 
-imageCommit 
+--
+imageCommit
   :: (Consumes ImageCommit contentType)
   => ContentType contentType -- ^ request content-type ('MimeType')
   -> Accept accept -- ^ request accept ('MimeType')
@@ -1239,10 +1239,10 @@ imageCommit
 imageCommit _  _ =
   _mkRequest "POST" ["/commit"]
 
-data ImageCommit 
+data ImageCommit
 
 -- | /Body Param/ "containerConfig" - The container configuration
-instance HasBodyParam ImageCommit Config 
+instance HasBodyParam ImageCommit Config
 
 -- | /Optional Param/ "container" - The ID or name of the container to commit
 instance HasOptionalParam ImageCommit Container2 where
@@ -1289,14 +1289,14 @@ instance Produces ImageCommit MimeJSON
 -- *** imageCreate
 
 -- | @POST \/images\/create@
--- 
+--
 -- Create an image
--- 
+--
 -- Create an image by either pulling it from a registry or importing it.
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-imageCreate 
+--
+imageCreate
   :: (Consumes ImageCreate contentType)
   => ContentType contentType -- ^ request content-type ('MimeType')
   -> Accept accept -- ^ request accept ('MimeType')
@@ -1304,10 +1304,10 @@ imageCreate
 imageCreate _  _ =
   _mkRequest "POST" ["/images/create"]
 
-data ImageCreate 
+data ImageCreate
 
 -- | /Body Param/ "inputImage" - Image content if the value `-` has been specified in fromSrc query parameter
-instance HasBodyParam ImageCreate InputImage2 
+instance HasBodyParam ImageCreate InputImage2
 
 -- | /Optional Param/ "fromImage" - Name of the image to pull. The name may include a tag or digest. This parameter may only be used when pulling an image. The pull is cancelled if the HTTP connection is closed.
 instance HasOptionalParam ImageCreate FromImage where
@@ -1346,19 +1346,19 @@ instance Produces ImageCreate MimeJSON
 -- *** imageDelete
 
 -- | @DELETE \/images\/{name}@
--- 
+--
 -- Remove an image
--- 
--- Remove an image, along with any untagged parent images that were referenced by that image.  Images can't be removed if they have descendant images, are being used by a running container or are being used by a build. 
--- 
-imageDelete 
+--
+-- Remove an image, along with any untagged parent images that were referenced by that image.  Images can't be removed if they have descendant images, are being used by a running container or are being used by a build.
+--
+imageDelete
   :: Accept accept -- ^ request accept ('MimeType')
   -> Name -- ^ "name" -  Image name or ID
   -> DockerEngineRequest ImageDelete MimeNoContent [ImageDeleteResponse] accept
 imageDelete  _ (Name name) =
   _mkRequest "DELETE" ["/images/",toPath name]
 
-data ImageDelete  
+data ImageDelete
 
 -- | /Optional Param/ "force" - Remove the image even if it is being used by stopped containers or has other tags
 instance HasOptionalParam ImageDelete Force where
@@ -1382,19 +1382,19 @@ instance Produces ImageDelete MimeJSON
 -- *** imageGet
 
 -- | @GET \/images\/{name}\/get@
--- 
+--
 -- Export an image
--- 
--- Get a tarball containing all images and metadata for a repository.  If `name` is a specific name and tag (e.g. `ubuntu:latest`), then only that image (and its parents) are returned. If `name` is an image ID, similarly only that image (and its parents) are returned, but with the exclusion of the `repositories` file in the tarball, as there were no image names referenced.  ### Image tarball format  An image tarball contains one directory per image layer (named using its long ID), each containing these files:  - `VERSION`: currently `1.0` - the file format version - `json`: detailed layer information, similar to `docker inspect layer_id` - `layer.tar`: A tarfile containing the filesystem changes in this layer  The `layer.tar` file contains `aufs` style `.wh..wh.aufs` files and directories for storing attribute changes and deletions.  If the tarball defines a repository, the tarball should also include a `repositories` file at the root that contains a list of repository and tag names mapped to layer IDs.  ```json {   \"hello-world\": {     \"latest\": \"565a9d68a73f6706862bfe8409a7f659776d4d60a8d096eb4a3cbce6999cc2a1\"   } } ``` 
--- 
-imageGet 
+--
+-- Get a tarball containing all images and metadata for a repository.  If `name` is a specific name and tag (e.g. `ubuntu:latest`), then only that image (and its parents) are returned. If `name` is an image ID, similarly only that image (and its parents) are returned, but with the exclusion of the `repositories` file in the tarball, as there were no image names referenced.  ### Image tarball format  An image tarball contains one directory per image layer (named using its long ID), each containing these files:  - `VERSION`: currently `1.0` - the file format version - `json`: detailed layer information, similar to `docker inspect layer_id` - `layer.tar`: A tarfile containing the filesystem changes in this layer  The `layer.tar` file contains `aufs` style `.wh..wh.aufs` files and directories for storing attribute changes and deletions.  If the tarball defines a repository, the tarball should also include a `repositories` file at the root that contains a list of repository and tag names mapped to layer IDs.  ```json {   \"hello-world\": {     \"latest\": \"565a9d68a73f6706862bfe8409a7f659776d4d60a8d096eb4a3cbce6999cc2a1\"   } } ```
+--
+imageGet
   :: Accept accept -- ^ request accept ('MimeType')
   -> Name -- ^ "name" -  Image name or ID
   -> DockerEngineRequest ImageGet MimeNoContent Binary accept
 imageGet  _ (Name name) =
   _mkRequest "GET" ["/images/",toPath name,"/get"]
 
-data ImageGet  
+data ImageGet
 
 -- | @application/json@
 instance Consumes ImageGet MimeJSON
@@ -1408,18 +1408,18 @@ instance Produces ImageGet MimeXTar
 -- *** imageGetAll
 
 -- | @GET \/images\/get@
--- 
+--
 -- Export several images
--- 
--- Get a tarball containing all images and metadata for several image repositories.  For each value of the `names` parameter: if it is a specific name and tag (e.g. `ubuntu:latest`), then only that image (and its parents) are returned; if it is an image ID, similarly only that image (and its parents) are returned and there would be no names referenced in the 'repositories' file for this image ID.  For details on the format, see [the export image endpoint](#operation/ImageGet). 
--- 
-imageGetAll 
+--
+-- Get a tarball containing all images and metadata for several image repositories.  For each value of the `names` parameter: if it is a specific name and tag (e.g. `ubuntu:latest`), then only that image (and its parents) are returned; if it is an image ID, similarly only that image (and its parents) are returned and there would be no names referenced in the 'repositories' file for this image ID.  For details on the format, see [the export image endpoint](#operation/ImageGet).
+--
+imageGetAll
   :: Accept accept -- ^ request accept ('MimeType')
   -> DockerEngineRequest ImageGetAll MimeNoContent Binary accept
 imageGetAll  _ =
   _mkRequest "GET" ["/images/get"]
 
-data ImageGetAll  
+data ImageGetAll
 
 -- | /Optional Param/ "names" - Image names to filter by
 instance HasOptionalParam ImageGetAll Names where
@@ -1438,19 +1438,19 @@ instance Produces ImageGetAll MimeXTar
 -- *** imageHistory
 
 -- | @GET \/images\/{name}\/history@
--- 
+--
 -- Get the history of an image
--- 
+--
 -- Return parent layers of an image.
--- 
-imageHistory 
+--
+imageHistory
   :: Accept accept -- ^ request accept ('MimeType')
   -> Name -- ^ "name" -  Image name or ID
   -> DockerEngineRequest ImageHistory MimeNoContent [InlineResponse2006] accept
 imageHistory  _ (Name name) =
   _mkRequest "GET" ["/images/",toPath name,"/history"]
 
-data ImageHistory  
+data ImageHistory
 
 -- | @application/json@
 instance Consumes ImageHistory MimeJSON
@@ -1464,19 +1464,19 @@ instance Produces ImageHistory MimeJSON
 -- *** imageInspect
 
 -- | @GET \/images\/{name}\/json@
--- 
+--
 -- Inspect an image
--- 
+--
 -- Return low-level information about an image.
--- 
-imageInspect 
+--
+imageInspect
   :: Accept accept -- ^ request accept ('MimeType')
   -> Name -- ^ "name" -  Image name or id
   -> DockerEngineRequest ImageInspect MimeNoContent Image accept
 imageInspect  _ (Name name) =
   _mkRequest "GET" ["/images/",toPath name,"/json"]
 
-data ImageInspect  
+data ImageInspect
 
 -- | @application/json@
 instance Consumes ImageInspect MimeJSON
@@ -1490,25 +1490,25 @@ instance Produces ImageInspect MimeJSON
 -- *** imageList
 
 -- | @GET \/images\/json@
--- 
+--
 -- List Images
--- 
+--
 -- Returns a list of images on the server. Note that it uses a different, smaller representation of an image than inspecting a single image.
--- 
-imageList 
+--
+imageList
   :: Accept accept -- ^ request accept ('MimeType')
   -> DockerEngineRequest ImageList MimeNoContent [ImageSummary] accept
 imageList  _ =
   _mkRequest "GET" ["/images/json"]
 
-data ImageList  
+data ImageList
 
 -- | /Optional Param/ "all" - Show all images. Only images from a final layer (no children) are shown by default.
 instance HasOptionalParam ImageList All where
   applyOptionalParam req (All xs) =
     req `setQuery` toQuery ("all", Just xs)
 
--- | /Optional Param/ "filters" - A JSON encoded value of the filters (a `map[string][]string`) to process on the images list.  Available filters: - `dangling=true` - `label=key` or `label=\"key=value\"` of an image label - `before`=(`<image-name>[:<tag>]`,  `<image id>` or `<image@digest>`) - `since`=(`<image-name>[:<tag>]`,  `<image id>` or `<image@digest>`) - `reference`=(`<image-name>[:<tag>]`) 
+-- | /Optional Param/ "filters" - A JSON encoded value of the filters (a `map[string][]string`) to process on the images list.  Available filters: - `dangling=true` - `label=key` or `label=\"key=value\"` of an image label - `before`=(`<image-name>[:<tag>]`,  `<image id>` or `<image@digest>`) - `since`=(`<image-name>[:<tag>]`,  `<image id>` or `<image@digest>`) - `reference`=(`<image-name>[:<tag>]`)
 instance HasOptionalParam ImageList Filters where
   applyOptionalParam req (Filters xs) =
     req `setQuery` toQuery ("filters", Just xs)
@@ -1530,14 +1530,14 @@ instance Produces ImageList MimeJSON
 -- *** imageLoad
 
 -- | @POST \/images\/load@
--- 
+--
 -- Import images
--- 
--- Load a set of images and tags into a repository.  For details on the format, see [the export image endpoint](#operation/ImageGet). 
--- 
+--
+-- Load a set of images and tags into a repository.  For details on the format, see [the export image endpoint](#operation/ImageGet).
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-imageLoad 
+--
+imageLoad
   :: (Consumes ImageLoad contentType)
   => ContentType contentType -- ^ request content-type ('MimeType')
   -> Accept accept -- ^ request accept ('MimeType')
@@ -1545,10 +1545,10 @@ imageLoad
 imageLoad _  _ =
   _mkRequest "POST" ["/images/load"]
 
-data ImageLoad 
+data ImageLoad
 
 -- | /Body Param/ "imagesTarball" - Tar archive containing images
-instance HasBodyParam ImageLoad ImagesTarball2 
+instance HasBodyParam ImageLoad ImagesTarball2
 
 -- | /Optional Param/ "quiet" - Suppress progress details during load.
 instance HasOptionalParam ImageLoad Quiet where
@@ -1565,18 +1565,18 @@ instance Produces ImageLoad MimeJSON
 -- *** imagePrune
 
 -- | @POST \/images\/prune@
--- 
+--
 -- Delete unused images
--- 
-imagePrune 
+--
+imagePrune
   :: Accept accept -- ^ request accept ('MimeType')
   -> DockerEngineRequest ImagePrune MimeNoContent InlineResponse2008 accept
 imagePrune  _ =
   _mkRequest "POST" ["/images/prune"]
 
-data ImagePrune  
+data ImagePrune
 
--- | /Optional Param/ "filters" - Filters to process on the prune list, encoded as JSON (a `map[string][]string`).  Available filters: - `dangling=<boolean>` When set to `true` (or `1`), prune only    unused *and* untagged images. When set to `false`    (or `0`), all unused images are pruned. 
+-- | /Optional Param/ "filters" - Filters to process on the prune list, encoded as JSON (a `map[string][]string`).  Available filters: - `dangling=<boolean>` When set to `true` (or `1`), prune only    unused *and* untagged images. When set to `false`    (or `0`), all unused images are pruned.
 instance HasOptionalParam ImagePrune Filters where
   applyOptionalParam req (Filters xs) =
     req `setQuery` toQuery ("filters", Just xs)
@@ -1593,14 +1593,14 @@ instance Produces ImagePrune MimeJSON
 -- *** imagePush
 
 -- | @POST \/images\/{name}\/push@
--- 
+--
 -- Push an image
--- 
--- Push an image to a registry.  If you wish to push an image on to a private registry, that image must already have a tag which references the registry. For example, `registry.example.com/myimage:latest`.  The push is cancelled if the HTTP connection is closed. 
--- 
+--
+-- Push an image to a registry.  If you wish to push an image on to a private registry, that image must already have a tag which references the registry. For example, `registry.example.com/myimage:latest`.  The push is cancelled if the HTTP connection is closed.
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-imagePush 
+--
+imagePush
   :: Accept accept -- ^ request accept ('MimeType')
   -> Name -- ^ "name" -  Image name or ID.
   -> XRegistryAuth -- ^ "xRegistryAuth" -  A base64-encoded auth configuration. [See the authentication section for details.](#section/Authentication)
@@ -1609,7 +1609,7 @@ imagePush  _ (Name name) (XRegistryAuth xRegistryAuth) =
   _mkRequest "POST" ["/images/",toPath name,"/push"]
     `setHeader` toHeader ("X-Registry-Auth", xRegistryAuth)
 
-data ImagePush  
+data ImagePush
 
 -- | /Optional Param/ "tag" - The tag to associate with the image on the registry.
 instance HasOptionalParam ImagePush Tag where
@@ -1628,12 +1628,12 @@ instance Produces ImagePush MimePlainText
 -- *** imageSearch
 
 -- | @GET \/images\/search@
--- 
+--
 -- Search images
--- 
+--
 -- Search for an image on Docker Hub.
--- 
-imageSearch 
+--
+imageSearch
   :: Accept accept -- ^ request accept ('MimeType')
   -> Term -- ^ "term" -  Term to search
   -> DockerEngineRequest ImageSearch MimeNoContent [InlineResponse2007] accept
@@ -1641,14 +1641,14 @@ imageSearch  _ (Term term) =
   _mkRequest "GET" ["/images/search"]
     `setQuery` toQuery ("term", Just term)
 
-data ImageSearch  
+data ImageSearch
 
 -- | /Optional Param/ "limit" - Maximum number of results to return
 instance HasOptionalParam ImageSearch Limit where
   applyOptionalParam req (Limit xs) =
     req `setQuery` toQuery ("limit", Just xs)
 
--- | /Optional Param/ "filters" - A JSON encoded value of the filters (a `map[string][]string`) to process on the images list. Available filters:  - `stars=<number>` - `is-automated=(true|false)` - `is-official=(true|false)` 
+-- | /Optional Param/ "filters" - A JSON encoded value of the filters (a `map[string][]string`) to process on the images list. Available filters:  - `stars=<number>` - `is-automated=(true|false)` - `is-official=(true|false)`
 instance HasOptionalParam ImageSearch Filters where
   applyOptionalParam req (Filters xs) =
     req `setQuery` toQuery ("filters", Just xs)
@@ -1665,21 +1665,21 @@ instance Produces ImageSearch MimeJSON
 -- *** imageTag
 
 -- | @POST \/images\/{name}\/tag@
--- 
+--
 -- Tag an image
--- 
+--
 -- Tag an image so that it becomes part of a repository.
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-imageTag 
+--
+imageTag
   :: Accept accept -- ^ request accept ('MimeType')
   -> Name -- ^ "name" -  Image name or ID to tag.
   -> DockerEngineRequest ImageTag MimeNoContent res accept
 imageTag  _ (Name name) =
   _mkRequest "POST" ["/images/",toPath name,"/tag"]
 
-data ImageTag  
+data ImageTag
 
 -- | /Optional Param/ "repo" - The repository to tag in. For example, `someuser/someimage`.
 instance HasOptionalParam ImageTag Repo where
@@ -1707,12 +1707,12 @@ instance Produces ImageTag MimePlainText
 -- *** networkConnect
 
 -- | @POST \/networks\/{id}\/connect@
--- 
+--
 -- Connect a container to a network
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-networkConnect 
+--
+networkConnect
   :: (Consumes NetworkConnect contentType, MimeRender contentType Container)
   => ContentType contentType -- ^ request content-type ('MimeType')
   -> Accept accept -- ^ request accept ('MimeType')
@@ -1723,8 +1723,8 @@ networkConnect _  _ (Id id) container =
   _mkRequest "POST" ["/networks/",toPath id,"/connect"]
     `setBodyParam` container
 
-data NetworkConnect 
-instance HasBodyParam NetworkConnect Container 
+data NetworkConnect
+instance HasBodyParam NetworkConnect Container
 
 -- | @application/octet-stream@
 instance Consumes NetworkConnect MimeOctetStream
@@ -1738,23 +1738,23 @@ instance Produces NetworkConnect MimePlainText
 -- *** networkCreate
 
 -- | @POST \/networks\/create@
--- 
+--
 -- Create a network
--- 
-networkCreate 
-  :: (Consumes NetworkCreate contentType, MimeRender contentType NetworkConfig)
+--
+networkCreate
+  :: (Consumes NetworkCreate contentType, MimeRender contentType NetworkConfig2)
   => ContentType contentType -- ^ request content-type ('MimeType')
   -> Accept accept -- ^ request accept ('MimeType')
-  -> NetworkConfig -- ^ "networkConfig" -  Network configuration
+  -> NetworkConfig2 -- ^ "networkConfig" -  Network configuration
   -> DockerEngineRequest NetworkCreate contentType InlineResponse2011 accept
 networkCreate _  _ networkConfig =
   _mkRequest "POST" ["/networks/create"]
     `setBodyParam` networkConfig
 
-data NetworkCreate 
+data NetworkCreate
 
 -- | /Body Param/ "networkConfig" - Network configuration
-instance HasBodyParam NetworkCreate NetworkConfig 
+instance HasBodyParam NetworkCreate NetworkConfig2
 
 -- | @application/json@
 instance Consumes NetworkCreate MimeJSON
@@ -1766,19 +1766,19 @@ instance Produces NetworkCreate MimeJSON
 -- *** networkDelete
 
 -- | @DELETE \/networks\/{id}@
--- 
+--
 -- Remove a network
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-networkDelete 
+--
+networkDelete
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  Network ID or name
   -> DockerEngineRequest NetworkDelete MimeNoContent res accept
 networkDelete  _ (Id id) =
   _mkRequest "DELETE" ["/networks/",toPath id]
 
-data NetworkDelete  
+data NetworkDelete
 
 -- | @application/json@
 instance Consumes NetworkDelete MimeJSON
@@ -1794,12 +1794,12 @@ instance Produces NetworkDelete MimePlainText
 -- *** networkDisconnect
 
 -- | @POST \/networks\/{id}\/disconnect@
--- 
+--
 -- Disconnect a container from a network
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-networkDisconnect 
+--
+networkDisconnect
   :: (Consumes NetworkDisconnect contentType, MimeRender contentType Container1)
   => ContentType contentType -- ^ request content-type ('MimeType')
   -> Accept accept -- ^ request accept ('MimeType')
@@ -1810,8 +1810,8 @@ networkDisconnect _  _ (Id id) container =
   _mkRequest "POST" ["/networks/",toPath id,"/disconnect"]
     `setBodyParam` container
 
-data NetworkDisconnect 
-instance HasBodyParam NetworkDisconnect Container1 
+data NetworkDisconnect
+instance HasBodyParam NetworkDisconnect Container1
 
 -- | @application/json@
 instance Consumes NetworkDisconnect MimeJSON
@@ -1825,17 +1825,17 @@ instance Produces NetworkDisconnect MimePlainText
 -- *** networkInspect
 
 -- | @GET \/networks\/{id}@
--- 
+--
 -- Inspect a network
--- 
-networkInspect 
+--
+networkInspect
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  Network ID or name
   -> DockerEngineRequest NetworkInspect MimeNoContent Network accept
 networkInspect  _ (Id id) =
   _mkRequest "GET" ["/networks/",toPath id]
 
-data NetworkInspect  
+data NetworkInspect
 
 -- | @application/json@
 instance Consumes NetworkInspect MimeJSON
@@ -1849,18 +1849,18 @@ instance Produces NetworkInspect MimeJSON
 -- *** networkList
 
 -- | @GET \/networks@
--- 
+--
 -- List networks
--- 
-networkList 
+--
+networkList
   :: Accept accept -- ^ request accept ('MimeType')
   -> DockerEngineRequest NetworkList MimeNoContent [Network] accept
 networkList  _ =
   _mkRequest "GET" ["/networks"]
 
-data NetworkList  
+data NetworkList
 
--- | /Optional Param/ "filters" - JSON encoded value of the filters (a `map[string][]string`) to process on the networks list. Available filters:  - `driver=<driver-name>` Matches a network's driver. - `id=<network-id>` Matches all or part of a network ID. - `label=<key>` or `label=<key>=<value>` of a network label. - `name=<network-name>` Matches all or part of a network name. - `type=[\"custom\"|\"builtin\"]` Filters networks by type. The `custom` keyword returns all user-defined networks. 
+-- | /Optional Param/ "filters" - JSON encoded value of the filters (a `map[string][]string`) to process on the networks list. Available filters:  - `driver=<driver-name>` Matches a network's driver. - `id=<network-id>` Matches all or part of a network ID. - `label=<key>` or `label=<key>=<value>` of a network label. - `name=<network-name>` Matches all or part of a network name. - `type=[\"custom\"|\"builtin\"]` Filters networks by type. The `custom` keyword returns all user-defined networks.
 instance HasOptionalParam NetworkList Filters where
   applyOptionalParam req (Filters xs) =
     req `setQuery` toQuery ("filters", Just xs)
@@ -1877,18 +1877,18 @@ instance Produces NetworkList MimeJSON
 -- *** networkPrune
 
 -- | @POST \/networks\/prune@
--- 
+--
 -- Delete unused networks
--- 
-networkPrune 
+--
+networkPrune
   :: Accept accept -- ^ request accept ('MimeType')
   -> DockerEngineRequest NetworkPrune MimeNoContent InlineResponse20017 accept
 networkPrune  _ =
   _mkRequest "POST" ["/networks/prune"]
 
-data NetworkPrune  
+data NetworkPrune
 
--- | /Optional Param/ "filters" - Filters to process on the prune list, encoded as JSON (a `map[string][]string`).  Available filters: 
+-- | /Optional Param/ "filters" - Filters to process on the prune list, encoded as JSON (a `map[string][]string`).  Available filters:
 instance HasOptionalParam NetworkPrune Filters where
   applyOptionalParam req (Filters xs) =
     req `setQuery` toQuery ("filters", Just xs)
@@ -1905,19 +1905,19 @@ instance Produces NetworkPrune MimeJSON
 -- *** nodeDelete
 
 -- | @DELETE \/nodes\/{id}@
--- 
+--
 -- Delete a node
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-nodeDelete 
+--
+nodeDelete
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  The ID or name of the node
   -> DockerEngineRequest NodeDelete MimeNoContent res accept
 nodeDelete  _ (Id id) =
   _mkRequest "DELETE" ["/nodes/",toPath id]
 
-data NodeDelete  
+data NodeDelete
 
 -- | /Optional Param/ "force" - Force remove a node from the swarm
 instance HasOptionalParam NodeDelete Force where
@@ -1938,17 +1938,17 @@ instance Produces NodeDelete MimePlainText
 -- *** nodeInspect
 
 -- | @GET \/nodes\/{id}@
--- 
+--
 -- Inspect a node
--- 
-nodeInspect 
+--
+nodeInspect
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  The ID or name of the node
   -> DockerEngineRequest NodeInspect MimeNoContent Node accept
 nodeInspect  _ (Id id) =
   _mkRequest "GET" ["/nodes/",toPath id]
 
-data NodeInspect  
+data NodeInspect
 
 -- | @application/json@
 instance Consumes NodeInspect MimeJSON
@@ -1964,18 +1964,18 @@ instance Produces NodeInspect MimePlainText
 -- *** nodeList
 
 -- | @GET \/nodes@
--- 
+--
 -- List nodes
--- 
-nodeList 
+--
+nodeList
   :: Accept accept -- ^ request accept ('MimeType')
   -> DockerEngineRequest NodeList MimeNoContent [Node] accept
 nodeList  _ =
   _mkRequest "GET" ["/nodes"]
 
-data NodeList  
+data NodeList
 
--- | /Optional Param/ "filters" - Filters to process on the nodes list, encoded as JSON (a `map[string][]string`).  Available filters: - `id=<node id>` - `label=<engine label>` - `membership=`(`accepted`|`pending`)` - `name=<node name>` - `role=`(`manager`|`worker`)` 
+-- | /Optional Param/ "filters" - Filters to process on the nodes list, encoded as JSON (a `map[string][]string`).  Available filters: - `id=<node id>` - `label=<engine label>` - `membership=`(`accepted`|`pending`)` - `name=<node name>` - `role=`(`manager`|`worker`)`
 instance HasOptionalParam NodeList Filters where
   applyOptionalParam req (Filters xs) =
     req `setQuery` toQuery ("filters", Just xs)
@@ -1994,12 +1994,12 @@ instance Produces NodeList MimePlainText
 -- *** nodeUpdate
 
 -- | @POST \/nodes\/{id}\/update@
--- 
+--
 -- Update a node
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-nodeUpdate 
+--
+nodeUpdate
   :: (Consumes NodeUpdate contentType)
   => ContentType contentType -- ^ request content-type ('MimeType')
   -> Accept accept -- ^ request accept ('MimeType')
@@ -2010,8 +2010,8 @@ nodeUpdate _  _ (Id id) (Version version) =
   _mkRequest "POST" ["/nodes/",toPath id,"/update"]
     `setQuery` toQuery ("version", Just version)
 
-data NodeUpdate 
-instance HasBodyParam NodeUpdate NodeSpec 
+data NodeUpdate
+instance HasBodyParam NodeUpdate NodeSpec
 
 -- | @application/json@
 instance Consumes NodeUpdate MimeJSON
@@ -2029,10 +2029,10 @@ instance Produces NodeUpdate MimePlainText
 -- *** getPluginPrivileges
 
 -- | @GET \/plugins\/privileges@
--- 
+--
 -- Get plugin privileges
--- 
-getPluginPrivileges 
+--
+getPluginPrivileges
   :: Accept accept -- ^ request accept ('MimeType')
   -> Name -- ^ "name" -  The name of the plugin. The `:latest` tag is optional, and is the default if omitted.
   -> DockerEngineRequest GetPluginPrivileges MimeNoContent [InlineResponse20018] accept
@@ -2040,7 +2040,7 @@ getPluginPrivileges  _ (Name name) =
   _mkRequest "GET" ["/plugins/privileges"]
     `setQuery` toQuery ("name", Just name)
 
-data GetPluginPrivileges  
+data GetPluginPrivileges
 
 -- | @application/json@
 instance Consumes GetPluginPrivileges MimeJSON
@@ -2056,12 +2056,12 @@ instance Produces GetPluginPrivileges MimePlainText
 -- *** pluginCreate
 
 -- | @POST \/plugins\/create@
--- 
+--
 -- Create a plugin
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-pluginCreate 
+--
+pluginCreate
   :: (Consumes PluginCreate contentType)
   => ContentType contentType -- ^ request content-type ('MimeType')
   -> Accept accept -- ^ request accept ('MimeType')
@@ -2071,10 +2071,10 @@ pluginCreate _  _ (Name name) =
   _mkRequest "POST" ["/plugins/create"]
     `setQuery` toQuery ("name", Just name)
 
-data PluginCreate 
+data PluginCreate
 
 -- | /Body Param/ "tarContext" - Path to tar containing plugin rootfs and manifest
-instance HasBodyParam PluginCreate TarContext2 
+instance HasBodyParam PluginCreate TarContext2
 
 -- | @application/x-tar@
 instance Consumes PluginCreate MimeXTar
@@ -2088,17 +2088,17 @@ instance Produces PluginCreate MimePlainText
 -- *** pluginDelete
 
 -- | @DELETE \/plugins\/{name}@
--- 
+--
 -- Remove a plugin
--- 
-pluginDelete 
+--
+pluginDelete
   :: Accept accept -- ^ request accept ('MimeType')
   -> Name -- ^ "name" -  The name of the plugin. The `:latest` tag is optional, and is the default if omitted.
   -> DockerEngineRequest PluginDelete MimeNoContent Plugin accept
 pluginDelete  _ (Name name) =
   _mkRequest "DELETE" ["/plugins/",toPath name]
 
-data PluginDelete  
+data PluginDelete
 
 -- | /Optional Param/ "force" - Disable the plugin before removing. This may result in issues if the plugin is in use by a container.
 instance HasOptionalParam PluginDelete Force where
@@ -2119,19 +2119,19 @@ instance Produces PluginDelete MimePlainText
 -- *** pluginDisable
 
 -- | @POST \/plugins\/{name}\/disable@
--- 
+--
 -- Disable a plugin
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-pluginDisable 
+--
+pluginDisable
   :: Accept accept -- ^ request accept ('MimeType')
   -> Name -- ^ "name" -  The name of the plugin. The `:latest` tag is optional, and is the default if omitted.
   -> DockerEngineRequest PluginDisable MimeNoContent res accept
 pluginDisable  _ (Name name) =
   _mkRequest "POST" ["/plugins/",toPath name,"/disable"]
 
-data PluginDisable  
+data PluginDisable
 
 -- | @application/json@
 instance Consumes PluginDisable MimeJSON
@@ -2147,19 +2147,19 @@ instance Produces PluginDisable MimePlainText
 -- *** pluginEnable
 
 -- | @POST \/plugins\/{name}\/enable@
--- 
+--
 -- Enable a plugin
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-pluginEnable 
+--
+pluginEnable
   :: Accept accept -- ^ request accept ('MimeType')
   -> Name -- ^ "name" -  The name of the plugin. The `:latest` tag is optional, and is the default if omitted.
   -> DockerEngineRequest PluginEnable MimeNoContent res accept
 pluginEnable  _ (Name name) =
   _mkRequest "POST" ["/plugins/",toPath name,"/enable"]
 
-data PluginEnable  
+data PluginEnable
 
 -- | /Optional Param/ "timeout" - Set the HTTP client timeout (in seconds)
 instance HasOptionalParam PluginEnable Timeout where
@@ -2180,17 +2180,17 @@ instance Produces PluginEnable MimePlainText
 -- *** pluginInspect
 
 -- | @GET \/plugins\/{name}\/json@
--- 
+--
 -- Inspect a plugin
--- 
-pluginInspect 
+--
+pluginInspect
   :: Accept accept -- ^ request accept ('MimeType')
   -> Name -- ^ "name" -  The name of the plugin. The `:latest` tag is optional, and is the default if omitted.
   -> DockerEngineRequest PluginInspect MimeNoContent Plugin accept
 pluginInspect  _ (Name name) =
   _mkRequest "GET" ["/plugins/",toPath name,"/json"]
 
-data PluginInspect  
+data PluginInspect
 
 -- | @application/json@
 instance Consumes PluginInspect MimeJSON
@@ -2206,18 +2206,18 @@ instance Produces PluginInspect MimePlainText
 -- *** pluginList
 
 -- | @GET \/plugins@
--- 
+--
 -- List plugins
--- 
+--
 -- Returns information about installed plugins.
--- 
-pluginList 
+--
+pluginList
   :: Accept accept -- ^ request accept ('MimeType')
   -> DockerEngineRequest PluginList MimeNoContent [Plugin] accept
 pluginList  _ =
   _mkRequest "GET" ["/plugins"]
 
-data PluginList  
+data PluginList
 
 -- | @application/json@
 instance Consumes PluginList MimeJSON
@@ -2231,27 +2231,27 @@ instance Produces PluginList MimeJSON
 -- *** pluginPull
 
 -- | @POST \/plugins\/pull@
--- 
+--
 -- Install a plugin
--- 
--- Pulls and installs a plugin. After the plugin is installed, it can be enabled using the [`POST /plugins/{name}/enable` endpoint](#operation/PostPluginsEnable). 
--- 
+--
+-- Pulls and installs a plugin. After the plugin is installed, it can be enabled using the [`POST /plugins/{name}/enable` endpoint](#operation/PostPluginsEnable).
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-pluginPull 
+--
+pluginPull
   :: (Consumes PluginPull contentType)
   => ContentType contentType -- ^ request content-type ('MimeType')
   -> Accept accept -- ^ request accept ('MimeType')
-  -> Remote -- ^ "remote" -  Remote reference for plugin to install.  The `:latest` tag is optional, and is used as the default if omitted. 
+  -> Remote -- ^ "remote" -  Remote reference for plugin to install.  The `:latest` tag is optional, and is used as the default if omitted.
   -> DockerEngineRequest PluginPull contentType res accept
 pluginPull _  _ (Remote remote) =
   _mkRequest "POST" ["/plugins/pull"]
     `setQuery` toQuery ("remote", Just remote)
 
-data PluginPull 
-instance HasBodyParam PluginPull Body4 
+data PluginPull
+instance HasBodyParam PluginPull Body4
 
--- | /Optional Param/ "name" - Local name for the pulled plugin.  The `:latest` tag is optional, and is used as the default if omitted. 
+-- | /Optional Param/ "name" - Local name for the pulled plugin.  The `:latest` tag is optional, and is used as the default if omitted.
 instance HasOptionalParam PluginPull Name where
   applyOptionalParam req (Name xs) =
     req `setQuery` toQuery ("name", Just xs)
@@ -2273,21 +2273,21 @@ instance Produces PluginPull MimeJSON
 -- *** pluginPush
 
 -- | @POST \/plugins\/{name}\/push@
--- 
+--
 -- Push a plugin
--- 
--- Push a plugin to the registry. 
--- 
+--
+-- Push a plugin to the registry.
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-pluginPush 
+--
+pluginPush
   :: Accept accept -- ^ request accept ('MimeType')
   -> Name -- ^ "name" -  The name of the plugin. The `:latest` tag is optional, and is the default if omitted.
   -> DockerEngineRequest PluginPush MimeNoContent res accept
 pluginPush  _ (Name name) =
   _mkRequest "POST" ["/plugins/",toPath name,"/push"]
 
-data PluginPush  
+data PluginPush
 
 -- | @application/json@
 instance Consumes PluginPush MimeJSON
@@ -2303,12 +2303,12 @@ instance Produces PluginPush MimePlainText
 -- *** pluginSet
 
 -- | @POST \/plugins\/{name}\/set@
--- 
+--
 -- Configure a plugin
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-pluginSet 
+--
+pluginSet
   :: (Consumes PluginSet contentType)
   => ContentType contentType -- ^ request content-type ('MimeType')
   -> Accept accept -- ^ request accept ('MimeType')
@@ -2317,8 +2317,8 @@ pluginSet
 pluginSet _  _ (Name name) =
   _mkRequest "POST" ["/plugins/",toPath name,"/set"]
 
-data PluginSet 
-instance HasBodyParam PluginSet Body5 
+data PluginSet
+instance HasBodyParam PluginSet Body5
 
 -- | @application/json@
 instance Consumes PluginSet MimeJSON
@@ -2334,10 +2334,10 @@ instance Produces PluginSet MimePlainText
 -- *** secretCreate
 
 -- | @POST \/secrets\/create@
--- 
+--
 -- Create a secret
--- 
-secretCreate 
+--
+secretCreate
   :: (Consumes SecretCreate contentType)
   => ContentType contentType -- ^ request content-type ('MimeType')
   -> Accept accept -- ^ request accept ('MimeType')
@@ -2345,8 +2345,8 @@ secretCreate
 secretCreate _  _ =
   _mkRequest "POST" ["/secrets/create"]
 
-data SecretCreate 
-instance HasBodyParam SecretCreate  
+data SecretCreate
+instance HasBodyParam SecretCreate
 
 -- | @application/json@
 instance Consumes SecretCreate MimeJSON
@@ -2358,19 +2358,19 @@ instance Produces SecretCreate MimeJSON
 -- *** secretDelete
 
 -- | @DELETE \/secrets\/{id}@
--- 
+--
 -- Delete a secret
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-secretDelete 
+--
+secretDelete
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID of the secret
   -> DockerEngineRequest SecretDelete MimeNoContent res accept
 secretDelete  _ (Id id) =
   _mkRequest "DELETE" ["/secrets/",toPath id]
 
-data SecretDelete  
+data SecretDelete
 
 -- | @application/json@
 instance Consumes SecretDelete MimeJSON
@@ -2384,17 +2384,17 @@ instance Produces SecretDelete MimeJSON
 -- *** secretInspect
 
 -- | @GET \/secrets\/{id}@
--- 
+--
 -- Inspect a secret
--- 
-secretInspect 
+--
+secretInspect
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID of the secret
   -> DockerEngineRequest SecretInspect MimeNoContent Secret accept
 secretInspect  _ (Id id) =
   _mkRequest "GET" ["/secrets/",toPath id]
 
-data SecretInspect  
+data SecretInspect
 
 -- | @application/json@
 instance Consumes SecretInspect MimeJSON
@@ -2408,18 +2408,18 @@ instance Produces SecretInspect MimeJSON
 -- *** secretList
 
 -- | @GET \/secrets@
--- 
+--
 -- List secrets
--- 
-secretList 
+--
+secretList
   :: Accept accept -- ^ request accept ('MimeType')
   -> DockerEngineRequest SecretList MimeNoContent [Secret] accept
 secretList  _ =
   _mkRequest "GET" ["/secrets"]
 
-data SecretList  
+data SecretList
 
--- | /Optional Param/ "filters" - A JSON encoded value of the filters (a `map[string][]string`) to process on the secrets list. Available filters:  - `names=<secret name>` 
+-- | /Optional Param/ "filters" - A JSON encoded value of the filters (a `map[string][]string`) to process on the secrets list. Available filters:  - `names=<secret name>`
 instance HasOptionalParam SecretList Filters where
   applyOptionalParam req (Filters xs) =
     req `setQuery` toQuery ("filters", Just xs)
@@ -2438,21 +2438,21 @@ instance Produces SecretList MimeJSON
 -- *** serviceCreate
 
 -- | @POST \/services\/create@
--- 
+--
 -- Create a service
--- 
-serviceCreate 
+--
+serviceCreate
   :: (Consumes ServiceCreate contentType, MimeRender contentType )
   => ContentType contentType -- ^ request content-type ('MimeType')
   -> Accept accept -- ^ request accept ('MimeType')
-  ->  -- ^ "body"
+  -> body -- ^ "body"
   -> DockerEngineRequest ServiceCreate contentType InlineResponse2012 accept
 serviceCreate _  _ body =
   _mkRequest "POST" ["/services/create"]
     `setBodyParam` body
 
-data ServiceCreate 
-instance HasBodyParam ServiceCreate  
+data ServiceCreate
+instance HasBodyParam ServiceCreate
 
 -- | /Optional Param/ "X-Registry-Auth" - A base64-encoded auth configuration for pulling from private registries. [See the authentication section for details.](#section/Authentication)
 instance HasOptionalParam ServiceCreate XRegistryAuth where
@@ -2469,19 +2469,19 @@ instance Produces ServiceCreate MimeJSON
 -- *** serviceDelete
 
 -- | @DELETE \/services\/{id}@
--- 
+--
 -- Delete a service
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-serviceDelete 
+--
+serviceDelete
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID or name of service.
   -> DockerEngineRequest ServiceDelete MimeNoContent res accept
 serviceDelete  _ (Id id) =
   _mkRequest "DELETE" ["/services/",toPath id]
 
-data ServiceDelete  
+data ServiceDelete
 
 -- | @application/json@
 instance Consumes ServiceDelete MimeJSON
@@ -2497,17 +2497,17 @@ instance Produces ServiceDelete MimePlainText
 -- *** serviceInspect
 
 -- | @GET \/services\/{id}@
--- 
+--
 -- Inspect a service
--- 
-serviceInspect 
+--
+serviceInspect
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID or name of service.
   -> DockerEngineRequest ServiceInspect MimeNoContent Service accept
 serviceInspect  _ (Id id) =
   _mkRequest "GET" ["/services/",toPath id]
 
-data ServiceInspect  
+data ServiceInspect
 
 -- | @application/json@
 instance Consumes ServiceInspect MimeJSON
@@ -2523,18 +2523,18 @@ instance Produces ServiceInspect MimePlainText
 -- *** serviceList
 
 -- | @GET \/services@
--- 
+--
 -- List services
--- 
-serviceList 
+--
+serviceList
   :: Accept accept -- ^ request accept ('MimeType')
   -> DockerEngineRequest ServiceList MimeNoContent [Service] accept
 serviceList  _ =
   _mkRequest "GET" ["/services"]
 
-data ServiceList  
+data ServiceList
 
--- | /Optional Param/ "filters" - A JSON encoded value of the filters (a `map[string][]string`) to process on the services list. Available filters:  - `id=<service id>` - `name=<service name>` - `label=<service label>` 
+-- | /Optional Param/ "filters" - A JSON encoded value of the filters (a `map[string][]string`) to process on the services list. Available filters:  - `id=<service id>` - `name=<service name>` - `label=<service label>`
 instance HasOptionalParam ServiceList Filters where
   applyOptionalParam req (Filters xs) =
     req `setQuery` toQuery ("filters", Just xs)
@@ -2553,26 +2553,26 @@ instance Produces ServiceList MimePlainText
 -- *** serviceLogs
 
 -- | @GET \/services\/{id}\/logs@
--- 
+--
 -- Get service logs
--- 
--- Get `stdout` and `stderr` logs from a service.  **Note**: This endpoint works only for services with the `json-file` or `journald` logging drivers. 
--- 
-serviceLogs 
+--
+-- Get `stdout` and `stderr` logs from a service.  **Note**: This endpoint works only for services with the `json-file` or `journald` logging drivers.
+--
+serviceLogs
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID or name of the container
   -> DockerEngineRequest ServiceLogs MimeNoContent Text accept
 serviceLogs  _ (Id id) =
   _mkRequest "GET" ["/services/",toPath id,"/logs"]
 
-data ServiceLogs  
+data ServiceLogs
 
 -- | /Optional Param/ "details" - Show extra details provided to logs.
 instance HasOptionalParam ServiceLogs Details where
   applyOptionalParam req (Details xs) =
     req `setQuery` toQuery ("details", Just xs)
 
--- | /Optional Param/ "follow" - Return the logs as a stream.  This will return a `101` HTTP response with a `Connection: upgrade` header, then hijack the HTTP connection to send raw output. For more information about hijacking and the stream format, [see the documentation for the attach endpoint](#operation/ContainerAttach). 
+-- | /Optional Param/ "follow" - Return the logs as a stream.  This will return a `101` HTTP response with a `Connection: upgrade` header, then hijack the HTTP connection to send raw output. For more information about hijacking and the stream format, [see the documentation for the attach endpoint](#operation/ContainerAttach).
 instance HasOptionalParam ServiceLogs Follow where
   applyOptionalParam req (Follow xs) =
     req `setQuery` toQuery ("follow", Just xs)
@@ -2616,15 +2616,15 @@ instance Produces ServiceLogs MimeJSON
 -- *** serviceUpdate
 
 -- | @POST \/services\/{id}\/update@
--- 
+--
 -- Update a service
--- 
-serviceUpdate 
+--
+serviceUpdate
   :: (Consumes ServiceUpdate contentType, MimeRender contentType )
   => ContentType contentType -- ^ request content-type ('MimeType')
   -> Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID or name of service.
-  ->  -- ^ "body"
+  -> body  -- ^ "body"
   -> VersionInt -- ^ "version" -  The version number of the service object being updated. This is required to avoid conflicting writes.
   -> DockerEngineRequest ServiceUpdate contentType ImageDeleteResponse accept
 serviceUpdate _  _ (Id id) body (VersionInt version) =
@@ -2632,8 +2632,8 @@ serviceUpdate _  _ (Id id) body (VersionInt version) =
     `setBodyParam` body
     `setQuery` toQuery ("version", Just version)
 
-data ServiceUpdate 
-instance HasBodyParam ServiceUpdate  
+data ServiceUpdate
+instance HasBodyParam ServiceUpdate
 
 -- | /Optional Param/ "registryAuthFrom" - If the X-Registry-Auth header is not specified, this parameter indicates where to find registry authorization credentials. The valid values are `spec` and `previous-spec`.
 instance HasOptionalParam ServiceUpdate RegistryAuthFrom where
@@ -2657,10 +2657,10 @@ instance Produces ServiceUpdate MimeJSON
 -- *** swarmInit
 
 -- | @POST \/swarm\/init@
--- 
+--
 -- Initialize a new swarm
--- 
-swarmInit 
+--
+swarmInit
   :: (Consumes SwarmInit contentType, MimeRender contentType Body1)
   => ContentType contentType -- ^ request content-type ('MimeType')
   -> Accept accept -- ^ request accept ('MimeType')
@@ -2670,8 +2670,8 @@ swarmInit _  _ body =
   _mkRequest "POST" ["/swarm/init"]
     `setBodyParam` body
 
-data SwarmInit 
-instance HasBodyParam SwarmInit Body1 
+data SwarmInit
+instance HasBodyParam SwarmInit Body1
 
 -- | @application/json@
 instance Consumes SwarmInit MimeJSON
@@ -2687,18 +2687,18 @@ instance Produces SwarmInit MimePlainText
 -- *** swarmInspect
 
 -- | @GET \/swarm@
--- 
+--
 -- Inspect swarm
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-swarmInspect 
+--
+swarmInspect
   :: Accept accept -- ^ request accept ('MimeType')
   -> DockerEngineRequest SwarmInspect MimeNoContent res accept
 swarmInspect  _ =
   _mkRequest "GET" ["/swarm"]
 
-data SwarmInspect  
+data SwarmInspect
 
 -- | @application/json@
 instance Consumes SwarmInspect MimeJSON
@@ -2714,12 +2714,12 @@ instance Produces SwarmInspect MimePlainText
 -- *** swarmJoin
 
 -- | @POST \/swarm\/join@
--- 
+--
 -- Join an existing swarm
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-swarmJoin 
+--
+swarmJoin
   :: (Consumes SwarmJoin contentType, MimeRender contentType Body2)
   => ContentType contentType -- ^ request content-type ('MimeType')
   -> Accept accept -- ^ request accept ('MimeType')
@@ -2729,8 +2729,8 @@ swarmJoin _  _ body =
   _mkRequest "POST" ["/swarm/join"]
     `setBodyParam` body
 
-data SwarmJoin 
-instance HasBodyParam SwarmJoin Body2 
+data SwarmJoin
+instance HasBodyParam SwarmJoin Body2
 
 -- | @application/json@
 instance Consumes SwarmJoin MimeJSON
@@ -2746,18 +2746,18 @@ instance Produces SwarmJoin MimePlainText
 -- *** swarmLeave
 
 -- | @POST \/swarm\/leave@
--- 
+--
 -- Leave a swarm
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-swarmLeave 
+--
+swarmLeave
   :: Accept accept -- ^ request accept ('MimeType')
   -> DockerEngineRequest SwarmLeave MimeNoContent res accept
 swarmLeave  _ =
   _mkRequest "POST" ["/swarm/leave"]
 
-data SwarmLeave  
+data SwarmLeave
 
 -- | /Optional Param/ "force" - Force leave swarm, even if this is the last manager or that it will break the cluster.
 instance HasOptionalParam SwarmLeave Force where
@@ -2778,12 +2778,12 @@ instance Produces SwarmLeave MimePlainText
 -- *** swarmUnlock
 
 -- | @POST \/swarm\/unlock@
--- 
+--
 -- Unlock a locked manager
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-swarmUnlock 
+--
+swarmUnlock
   :: (Consumes SwarmUnlock contentType, MimeRender contentType Body3)
   => ContentType contentType -- ^ request content-type ('MimeType')
   -> Accept accept -- ^ request accept ('MimeType')
@@ -2793,8 +2793,8 @@ swarmUnlock _  _ body =
   _mkRequest "POST" ["/swarm/unlock"]
     `setBodyParam` body
 
-data SwarmUnlock 
-instance HasBodyParam SwarmUnlock Body3 
+data SwarmUnlock
+instance HasBodyParam SwarmUnlock Body3
 
 -- | @application/json@
 instance Consumes SwarmUnlock MimeJSON
@@ -2806,16 +2806,16 @@ instance Produces SwarmUnlock MimeJSON
 -- *** swarmUnlockkey
 
 -- | @GET \/swarm\/unlockkey@
--- 
+--
 -- Get the unlock key
--- 
-swarmUnlockkey 
+--
+swarmUnlockkey
   :: Accept accept -- ^ request accept ('MimeType')
   -> DockerEngineRequest SwarmUnlockkey MimeNoContent InlineResponse20019 accept
 swarmUnlockkey  _ =
   _mkRequest "GET" ["/swarm/unlockkey"]
 
-data SwarmUnlockkey  
+data SwarmUnlockkey
 
 -- | @application/json@
 instance Consumes SwarmUnlockkey MimeJSON
@@ -2829,12 +2829,12 @@ instance Produces SwarmUnlockkey MimePlainText
 -- *** swarmUpdate
 
 -- | @POST \/swarm\/update@
--- 
+--
 -- Update a swarm
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-swarmUpdate 
+--
+swarmUpdate
   :: (Consumes SwarmUpdate contentType, MimeRender contentType SwarmSpec)
   => ContentType contentType -- ^ request content-type ('MimeType')
   -> Accept accept -- ^ request accept ('MimeType')
@@ -2846,8 +2846,8 @@ swarmUpdate _  _ body (Version version) =
     `setBodyParam` body
     `setQuery` toQuery ("version", Just version)
 
-data SwarmUpdate 
-instance HasBodyParam SwarmUpdate SwarmSpec 
+data SwarmUpdate
+instance HasBodyParam SwarmUpdate SwarmSpec
 
 -- | /Optional Param/ "rotateWorkerToken" - Rotate the worker join token.
 instance HasOptionalParam SwarmUpdate RotateWorkerToken where
@@ -2880,12 +2880,12 @@ instance Produces SwarmUpdate MimePlainText
 -- *** systemAuth
 
 -- | @POST \/auth@
--- 
+--
 -- Check auth configuration
--- 
+--
 -- Validate credentials for a registry and, if available, get an identity token for accessing the registry without password.
--- 
-systemAuth 
+--
+systemAuth
   :: (Consumes SystemAuth contentType)
   => ContentType contentType -- ^ request content-type ('MimeType')
   -> Accept accept -- ^ request accept ('MimeType')
@@ -2893,10 +2893,10 @@ systemAuth
 systemAuth _  _ =
   _mkRequest "POST" ["/auth"]
 
-data SystemAuth 
+data SystemAuth
 
 -- | /Body Param/ "authConfig" - Authentication to check
-instance HasBodyParam SystemAuth AuthConfig 
+instance HasBodyParam SystemAuth AuthConfig
 
 -- | @application/json@
 instance Consumes SystemAuth MimeJSON
@@ -2908,16 +2908,16 @@ instance Produces SystemAuth MimeJSON
 -- *** systemDataUsage
 
 -- | @GET \/system\/df@
--- 
+--
 -- Get data usage information
--- 
-systemDataUsage 
+--
+systemDataUsage
   :: Accept accept -- ^ request accept ('MimeType')
   -> DockerEngineRequest SystemDataUsage MimeNoContent InlineResponse20013 accept
 systemDataUsage  _ =
   _mkRequest "GET" ["/system/df"]
 
-data SystemDataUsage  
+data SystemDataUsage
 
 -- | @application/json@
 instance Consumes SystemDataUsage MimeJSON
@@ -2933,18 +2933,18 @@ instance Produces SystemDataUsage MimePlainText
 -- *** systemEvents
 
 -- | @GET \/events@
--- 
+--
 -- Monitor events
--- 
--- Stream real-time events from the server.  Various objects within Docker report events when something happens to them.  Containers report these events: `attach, commit, copy, create, destroy, detach, die, exec_create, exec_detach, exec_start, export, kill, oom, pause, rename, resize, restart, start, stop, top, unpause, update`  Images report these events: `delete, import, load, pull, push, save, tag, untag`  Volumes report these events: `create, mount, unmount, destroy`  Networks report these events: `create, connect, disconnect, destroy`  The Docker daemon reports these events: `reload` 
--- 
-systemEvents 
+--
+-- Stream real-time events from the server.  Various objects within Docker report events when something happens to them.  Containers report these events: `attach, commit, copy, create, destroy, detach, die, exec_create, exec_detach, exec_start, export, kill, oom, pause, rename, resize, restart, start, stop, top, unpause, update`  Images report these events: `delete, import, load, pull, push, save, tag, untag`  Volumes report these events: `create, mount, unmount, destroy`  Networks report these events: `create, connect, disconnect, destroy`  The Docker daemon reports these events: `reload`
+--
+systemEvents
   :: Accept accept -- ^ request accept ('MimeType')
   -> DockerEngineRequest SystemEvents MimeNoContent InlineResponse20012 accept
 systemEvents  _ =
   _mkRequest "GET" ["/events"]
 
-data SystemEvents  
+data SystemEvents
 
 -- | /Optional Param/ "since" - Show events created since this timestamp then stream new events.
 instance HasOptionalParam SystemEvents SinceText where
@@ -2956,7 +2956,7 @@ instance HasOptionalParam SystemEvents Until where
   applyOptionalParam req (Until xs) =
     req `setQuery` toQuery ("until", Just xs)
 
--- | /Optional Param/ "filters" - A JSON encoded value of filters (a `map[string][]string`) to process on the event list. Available filters:  - `container=<string>` container name or ID - `event=<string>` event type - `image=<string>` image name or ID - `label=<string>` image or container label - `type=<string>` object to filter by, one of `container`, `image`, `volume`, `network`, or `daemon` - `volume=<string>` volume name or ID - `network=<string>` network name or ID - `daemon=<string>` daemon name or ID 
+-- | /Optional Param/ "filters" - A JSON encoded value of filters (a `map[string][]string`) to process on the event list. Available filters:  - `container=<string>` container name or ID - `event=<string>` event type - `image=<string>` image name or ID - `label=<string>` image or container label - `type=<string>` object to filter by, one of `container`, `image`, `volume`, `network`, or `daemon` - `volume=<string>` volume name or ID - `network=<string>` network name or ID - `daemon=<string>` daemon name or ID
 instance HasOptionalParam SystemEvents Filters where
   applyOptionalParam req (Filters xs) =
     req `setQuery` toQuery ("filters", Just xs)
@@ -2973,16 +2973,16 @@ instance Produces SystemEvents MimeJSON
 -- *** systemInfo
 
 -- | @GET \/info@
--- 
+--
 -- Get system information
--- 
-systemInfo 
+--
+systemInfo
   :: Accept accept -- ^ request accept ('MimeType')
   -> DockerEngineRequest SystemInfo MimeNoContent InlineResponse20010 accept
 systemInfo  _ =
   _mkRequest "GET" ["/info"]
 
-data SystemInfo  
+data SystemInfo
 
 -- | @application/json@
 instance Consumes SystemInfo MimeJSON
@@ -2996,18 +2996,18 @@ instance Produces SystemInfo MimeJSON
 -- *** systemPing
 
 -- | @GET \/_ping@
--- 
+--
 -- Ping
--- 
+--
 -- This is a dummy endpoint you can use to test if the server is accessible.
--- 
-systemPing 
+--
+systemPing
   :: Accept accept -- ^ request accept ('MimeType')
   -> DockerEngineRequest SystemPing MimeNoContent Text accept
 systemPing  _ =
   _mkRequest "GET" ["/_ping"]
 
-data SystemPing  
+data SystemPing
 
 -- | @application/json@
 instance Consumes SystemPing MimeJSON
@@ -3021,18 +3021,18 @@ instance Produces SystemPing MimePlainText
 -- *** systemVersion
 
 -- | @GET \/version@
--- 
+--
 -- Get version
--- 
+--
 -- Returns the version of Docker that is running and various information about the system that Docker is running on.
--- 
-systemVersion 
+--
+systemVersion
   :: Accept accept -- ^ request accept ('MimeType')
   -> DockerEngineRequest SystemVersion MimeNoContent InlineResponse20011 accept
 systemVersion  _ =
   _mkRequest "GET" ["/version"]
 
-data SystemVersion  
+data SystemVersion
 
 -- | @application/json@
 instance Consumes SystemVersion MimeJSON
@@ -3048,17 +3048,17 @@ instance Produces SystemVersion MimeJSON
 -- *** taskInspect
 
 -- | @GET \/tasks\/{id}@
--- 
+--
 -- Inspect a task
--- 
-taskInspect 
+--
+taskInspect
   :: Accept accept -- ^ request accept ('MimeType')
   -> Id -- ^ "id" -  ID of the task
   -> DockerEngineRequest TaskInspect MimeNoContent Task accept
 taskInspect  _ (Id id) =
   _mkRequest "GET" ["/tasks/",toPath id]
 
-data TaskInspect  
+data TaskInspect
 
 -- | @application/json@
 instance Consumes TaskInspect MimeJSON
@@ -3072,18 +3072,18 @@ instance Produces TaskInspect MimeJSON
 -- *** taskList
 
 -- | @GET \/tasks@
--- 
+--
 -- List tasks
--- 
-taskList 
+--
+taskList
   :: Accept accept -- ^ request accept ('MimeType')
   -> DockerEngineRequest TaskList MimeNoContent [Task] accept
 taskList  _ =
   _mkRequest "GET" ["/tasks"]
 
-data TaskList  
+data TaskList
 
--- | /Optional Param/ "filters" - A JSON encoded value of the filters (a `map[string][]string`) to process on the tasks list. Available filters:  - `id=<task id>` - `name=<task name>` - `service=<service name>` - `node=<node id or name>` - `label=key` or `label=\"key=value\"` - `desired-state=(running | shutdown | accepted)` 
+-- | /Optional Param/ "filters" - A JSON encoded value of the filters (a `map[string][]string`) to process on the tasks list. Available filters:  - `id=<task id>` - `name=<task name>` - `service=<service name>` - `node=<node id or name>` - `label=key` or `label=\"key=value\"` - `desired-state=(running | shutdown | accepted)`
 instance HasOptionalParam TaskList Filters where
   applyOptionalParam req (Filters xs) =
     req `setQuery` toQuery ("filters", Just xs)
@@ -3102,10 +3102,10 @@ instance Produces TaskList MimeJSON
 -- *** volumeCreate
 
 -- | @POST \/volumes\/create@
--- 
+--
 -- Create a volume
--- 
-volumeCreate 
+--
+volumeCreate
   :: (Consumes VolumeCreate contentType, MimeRender contentType VolumeConfig)
   => ContentType contentType -- ^ request content-type ('MimeType')
   -> Accept accept -- ^ request accept ('MimeType')
@@ -3115,10 +3115,10 @@ volumeCreate _  _ volumeConfig =
   _mkRequest "POST" ["/volumes/create"]
     `setBodyParam` volumeConfig
 
-data VolumeCreate 
+data VolumeCreate
 
 -- | /Body Param/ "volumeConfig" - Volume configuration
-instance HasBodyParam VolumeCreate VolumeConfig 
+instance HasBodyParam VolumeCreate VolumeConfig
 
 -- | @application/json@
 instance Consumes VolumeCreate MimeJSON
@@ -3130,21 +3130,21 @@ instance Produces VolumeCreate MimeJSON
 -- *** volumeDelete
 
 -- | @DELETE \/volumes\/{name}@
--- 
+--
 -- Remove a volume
--- 
+--
 -- Instruct the driver to remove the volume.
--- 
+--
 -- Note: Has 'Produces' instances, but no response schema
--- 
-volumeDelete 
+--
+volumeDelete
   :: Accept accept -- ^ request accept ('MimeType')
   -> Name -- ^ "name" -  Volume name or ID
   -> DockerEngineRequest VolumeDelete MimeNoContent res accept
 volumeDelete  _ (Name name) =
   _mkRequest "DELETE" ["/volumes/",toPath name]
 
-data VolumeDelete  
+data VolumeDelete
 
 -- | /Optional Param/ "force" - Force the removal of the volume
 instance HasOptionalParam VolumeDelete Force where
@@ -3165,17 +3165,17 @@ instance Produces VolumeDelete MimePlainText
 -- *** volumeInspect
 
 -- | @GET \/volumes\/{name}@
--- 
+--
 -- Inspect a volume
--- 
-volumeInspect 
+--
+volumeInspect
   :: Accept accept -- ^ request accept ('MimeType')
   -> Name -- ^ "name" -  Volume name or ID
   -> DockerEngineRequest VolumeInspect MimeNoContent Volume accept
 volumeInspect  _ (Name name) =
   _mkRequest "GET" ["/volumes/",toPath name]
 
-data VolumeInspect  
+data VolumeInspect
 
 -- | @application/json@
 instance Consumes VolumeInspect MimeJSON
@@ -3189,18 +3189,18 @@ instance Produces VolumeInspect MimeJSON
 -- *** volumeList
 
 -- | @GET \/volumes@
--- 
+--
 -- List volumes
--- 
-volumeList 
+--
+volumeList
   :: Accept accept -- ^ request accept ('MimeType')
   -> DockerEngineRequest VolumeList MimeNoContent InlineResponse20015 accept
 volumeList  _ =
   _mkRequest "GET" ["/volumes"]
 
-data VolumeList  
+data VolumeList
 
--- | /Optional Param/ "filters" - JSON encoded value of the filters (a `map[string][]string`) to process on the volumes list. Available filters:  - `name=<volume-name>` Matches all or part of a volume name. - `dangling=<boolean>` When set to `true` (or `1`), returns all    volumes that are not in use by a container. When set to `false`    (or `0`), only volumes that are in use by one or more    containers are returned. - `driver=<volume-driver-name>` Matches all or part of a volume   driver name. 
+-- | /Optional Param/ "filters" - JSON encoded value of the filters (a `map[string][]string`) to process on the volumes list. Available filters:  - `name=<volume-name>` Matches all or part of a volume name. - `dangling=<boolean>` When set to `true` (or `1`), returns all    volumes that are not in use by a container. When set to `false`    (or `0`), only volumes that are in use by one or more    containers are returned. - `driver=<volume-driver-name>` Matches all or part of a volume   driver name.
 instance HasOptionalParam VolumeList Filters where
   applyOptionalParam req (Filters xs) =
     req `setQuery` toQuery ("filters", Just xs)
@@ -3217,18 +3217,18 @@ instance Produces VolumeList MimeJSON
 -- *** volumePrune
 
 -- | @POST \/volumes\/prune@
--- 
+--
 -- Delete unused volumes
--- 
-volumePrune 
+--
+volumePrune
   :: Accept accept -- ^ request accept ('MimeType')
   -> DockerEngineRequest VolumePrune MimeNoContent InlineResponse20016 accept
 volumePrune  _ =
   _mkRequest "POST" ["/volumes/prune"]
 
-data VolumePrune  
+data VolumePrune
 
--- | /Optional Param/ "filters" - Filters to process on the prune list, encoded as JSON (a `map[string][]string`).  Available filters: 
+-- | /Optional Param/ "filters" - Filters to process on the prune list, encoded as JSON (a `map[string][]string`).  Available filters:
 instance HasOptionalParam VolumePrune Filters where
   applyOptionalParam req (Filters xs) =
     req `setQuery` toQuery ("filters", Just xs)
@@ -3348,5 +3348,3 @@ instance MimeType MimeXTar where
   mimeType _ = Just $ P.fromString "application/x-tar"
 -- instance MimeRender MimeXTar T.Text where mimeRender _ = undefined
 -- instance MimeUnrender MimeXTar T.Text where mimeUnrender _ = undefined
-
-

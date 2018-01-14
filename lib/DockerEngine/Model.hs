@@ -1,7 +1,7 @@
 {-
    Docker Engine API
 
-   The Engine API is an HTTP API served by Docker Engine. It is the API the Docker client uses to communicate with the Engine, so everything the Docker client can do can be done with the API.  Most of the client's commands map directly to API endpoints (e.g. `docker ps` is `GET /containers/json`). The notable exception is running containers, which consists of several API calls.  # Errors  The API uses standard HTTP status codes to indicate the success or failure of the API call. The body of the response will be JSON in the following format:  ``` {   \"message\": \"page not found\" } ```  # Versioning  The API is usually changed in each release of Docker, so API calls are versioned to ensure that clients don't break.  For Docker Engine 1.13, the API version is 1.25. To lock to this version, you prefix the URL with `/v1.25`. For example, calling `/info` is the same as calling `/v1.25/info`.  Engine releases in the near future should support this version of the API, so your client will continue to work even if it is talking to a newer Engine.  In previous versions of Docker, it was possible to access the API without providing a version. This behaviour is now deprecated will be removed in a future version of Docker.  The API uses an open schema model, which means server may add extra properties to responses. Likewise, the server will ignore any extra query parameters and request body properties. When you write clients, you need to ignore additional properties in responses to ensure they do not break when talking to newer Docker daemons.  This documentation is for version 1.25 of the API, which was introduced with Docker 1.13. Use this table to find documentation for previous versions of the API:  Docker version  | API version | Changes ----------------|-------------|--------- 1.12.x | [1.24](https://docs.docker.com/engine/api/v1.24/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-24-api-changes) 1.11.x | [1.23](https://docs.docker.com/engine/api/v1.23/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-23-api-changes) 1.10.x | [1.22](https://docs.docker.com/engine/api/v1.22/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-22-api-changes) 1.9.x | [1.21](https://docs.docker.com/engine/api/v1.21/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-21-api-changes) 1.8.x | [1.20](https://docs.docker.com/engine/api/v1.20/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-20-api-changes) 1.7.x | [1.19](https://docs.docker.com/engine/api/v1.19/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-19-api-changes) 1.6.x | [1.18](https://docs.docker.com/engine/api/v1.18/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-18-api-changes)  # Authentication  Authentication for registries is handled client side. The client has to send authentication details to various endpoints that need to communicate with registries, such as `POST /images/(name)/push`. These are sent as `X-Registry-Auth` header as a Base64 encoded (JSON) string with the following structure:  ``` {   \"username\": \"string\",   \"password\": \"string\",   \"email\": \"string\",   \"serveraddress\": \"string\" } ```  The `serveraddress` is a domain/IP without a protocol. Throughout this structure, double quotes are required.  If you have already got an identity token from the [`/auth` endpoint](#operation/SystemAuth), you can just pass this instead of credentials:  ``` {   \"identitytoken\": \"9cbaf023786cd7...\" } ``` 
+   The Engine API is an HTTP API served by Docker Engine. It is the API the Docker client uses to communicate with the Engine, so everything the Docker client can do can be done with the API.  Most of the client's commands map directly to API endpoints (e.g. `docker ps` is `GET /containers/json`). The notable exception is running containers, which consists of several API calls.  # Errors  The API uses standard HTTP status codes to indicate the success or failure of the API call. The body of the response will be JSON in the following format:  ``` {   \"message\": \"page not found\" } ```  # Versioning  The API is usually changed in each release of Docker, so API calls are versioned to ensure that clients don't break.  For Docker Engine 1.13, the API version is 1.25. To lock to this version, you prefix the URL with `/v1.25`. For example, calling `/info` is the same as calling `/v1.25/info`.  Engine releases in the near future should support this version of the API, so your client will continue to work even if it is talking to a newer Engine.  In previous versions of Docker, it was possible to access the API without providing a version. This behaviour is now deprecated will be removed in a future version of Docker.  The API uses an open schema model, which means server may add extra properties to responses. Likewise, the server will ignore any extra query parameters and request body properties. When you write clients, you need to ignore additional properties in responses to ensure they do not break when talking to newer Docker daemons.  This documentation is for version 1.25 of the API, which was introduced with Docker 1.13. Use this table to find documentation for previous versions of the API:  Docker version  | API version | Changes ----------------|-------------|--------- 1.12.x | [1.24](https://docs.docker.com/engine/api/v1.24/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-24-api-changes) 1.11.x | [1.23](https://docs.docker.com/engine/api/v1.23/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-23-api-changes) 1.10.x | [1.22](https://docs.docker.com/engine/api/v1.22/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-22-api-changes) 1.9.x | [1.21](https://docs.docker.com/engine/api/v1.21/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-21-api-changes) 1.8.x | [1.20](https://docs.docker.com/engine/api/v1.20/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-20-api-changes) 1.7.x | [1.19](https://docs.docker.com/engine/api/v1.19/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-19-api-changes) 1.6.x | [1.18](https://docs.docker.com/engine/api/v1.18/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-18-api-changes)  # Authentication  Authentication for registries is handled client side. The client has to send authentication details to various endpoints that need to communicate with registries, such as `POST /images/(name)/push`. These are sent as `X-Registry-Auth` header as a Base64 encoded (JSON) string with the following structure:  ``` {   \"username\": \"string\",   \"password\": \"string\",   \"email\": \"string\",   \"serveraddress\": \"string\" } ```  The `serveraddress` is a domain/IP without a protocol. Throughout this structure, double quotes are required.  If you have already got an identity token from the [`/auth` endpoint](#operation/SystemAuth), you can just pass this instead of credentials:  ``` {   \"identitytoken\": \"9cbaf023786cd7...\" } ```
 
    OpenAPI spec version: 2.0
    Docker Engine API API version: 1.25
@@ -352,11 +352,11 @@ data Config = Config
   , configAttachStdin :: !(Maybe Bool) -- ^ "AttachStdin" - Whether to attach to &#x60;stdin&#x60;.
   , configAttachStdout :: !(Maybe Bool) -- ^ "AttachStdout" - Whether to attach to &#x60;stdout&#x60;.
   , configAttachStderr :: !(Maybe Bool) -- ^ "AttachStderr" - Whether to attach to &#x60;stderr&#x60;.
-  , configExposedPorts :: !(Maybe (Map.Map String A.Value)) -- ^ "ExposedPorts" - An object mapping ports to an empty object in the form:  &#x60;{\&quot;&lt;port&gt;/&lt;tcp|udp&gt;\&quot;: {}}&#x60; 
+  , configExposedPorts :: !(Maybe (Map.Map String A.Value)) -- ^ "ExposedPorts" - An object mapping ports to an empty object in the form:  &#x60;{\&quot;&lt;port&gt;/&lt;tcp|udp&gt;\&quot;: {}}&#x60;
   , configTty :: !(Maybe Bool) -- ^ "Tty" - Attach standard streams to a TTY, including &#x60;stdin&#x60; if it is not closed.
   , configOpenStdin :: !(Maybe Bool) -- ^ "OpenStdin" - Open &#x60;stdin&#x60;
   , configStdinOnce :: !(Maybe Bool) -- ^ "StdinOnce" - Close &#x60;stdin&#x60; after one attached client disconnects
-  , configEnv :: !(Maybe [Text]) -- ^ "Env" - A list of environment variables to set inside the container in the form &#x60;[\&quot;VAR&#x3D;value\&quot;, ...]&#x60; 
+  , configEnv :: !(Maybe [Text]) -- ^ "Env" - A list of environment variables to set inside the container in the form &#x60;[\&quot;VAR&#x3D;value\&quot;, ...]&#x60;
   , configHealthcheck :: !(Maybe ConfigHealthcheck) -- ^ "Healthcheck"
   , configArgsEscaped :: !(Maybe Bool) -- ^ "ArgsEscaped" - Command is already escaped (Windows only)
   , configImage :: !(Maybe Text) -- ^ "Image" - The name of the image to use when creating the container
@@ -463,7 +463,7 @@ mkConfig =
 -- | ConfigHealthcheck
 -- A test to perform to check that the container is healthy.
 data ConfigHealthcheck = ConfigHealthcheck
-  { configHealthcheckTest :: !(Maybe [Text]) -- ^ "Test" - The test to perform. Possible values are:  - &#x60;{}&#x60; inherit healthcheck from image or parent image - &#x60;{\&quot;NONE\&quot;}&#x60; disable healthcheck - &#x60;{\&quot;CMD\&quot;, args...}&#x60; exec arguments directly - &#x60;{\&quot;CMD-SHELL\&quot;, command}&#x60; run command with system&#39;s default shell 
+  { configHealthcheckTest :: !(Maybe [Text]) -- ^ "Test" - The test to perform. Possible values are:  - &#x60;{}&#x60; inherit healthcheck from image or parent image - &#x60;{\&quot;NONE\&quot;}&#x60; disable healthcheck - &#x60;{\&quot;CMD\&quot;, args...}&#x60; exec arguments directly - &#x60;{\&quot;CMD-SHELL\&quot;, command}&#x60; run command with system&#39;s default shell
   , configHealthcheckInterval :: !(Maybe Int) -- ^ "Interval" - The time to wait between checks in nanoseconds. 0 means inherit.
   , configHealthcheckTimeout :: !(Maybe Int) -- ^ "Timeout" - The time to wait before considering the check to have hung. 0 means inherit.
   , configHealthcheckRetries :: !(Maybe Int) -- ^ "Retries" - The number of consecutive failures needed to consider a container as unhealthy. 0 means inherit.
@@ -596,20 +596,20 @@ mkContainer1 =
 -- ** ContainerSummary
 -- | ContainerSummary
 data ContainerSummary = ContainerSummary
-  { 
+  {
   } deriving (P.Show, P.Eq, P.Typeable)
 
 -- | FromJSON ContainerSummary
 instance A.FromJSON ContainerSummary where
   parseJSON = A.withObject "ContainerSummary" $ \o ->
     pure ContainerSummary
-      
+
 
 -- | ToJSON ContainerSummary
 instance A.ToJSON ContainerSummary where
   toJSON ContainerSummary  =
    _omitNulls
-      [ 
+      [
       ]
 
 
@@ -618,7 +618,7 @@ mkContainerSummary
   :: ContainerSummary
 mkContainerSummary =
   ContainerSummary
-  { 
+  {
   }
 
 -- ** ContainerSummaryInner
@@ -1549,16 +1549,16 @@ instance A.ToJSON ImageSummary where
 
 -- | Construct a value of type 'ImageSummary' (by applying it's required fields, if any)
 mkImageSummary
-  :: Text -- ^ 'imageSummaryId' 
-  -> Text -- ^ 'imageSummaryParentId' 
-  -> [Text] -- ^ 'imageSummaryRepoTags' 
-  -> [Text] -- ^ 'imageSummaryRepoDigests' 
-  -> Int -- ^ 'imageSummaryCreated' 
-  -> Int -- ^ 'imageSummarySize' 
-  -> Int -- ^ 'imageSummarySharedSize' 
-  -> Int -- ^ 'imageSummaryVirtualSize' 
-  -> (Map.Map String Text) -- ^ 'imageSummaryLabels' 
-  -> Int -- ^ 'imageSummaryContainers' 
+  :: Text -- ^ 'imageSummaryId'
+  -> Text -- ^ 'imageSummaryParentId'
+  -> [Text] -- ^ 'imageSummaryRepoTags'
+  -> [Text] -- ^ 'imageSummaryRepoDigests'
+  -> Int -- ^ 'imageSummaryCreated'
+  -> Int -- ^ 'imageSummarySize'
+  -> Int -- ^ 'imageSummarySharedSize'
+  -> Int -- ^ 'imageSummaryVirtualSize'
+  -> (Map.Map String Text) -- ^ 'imageSummaryLabels'
+  -> Int -- ^ 'imageSummaryContainers'
   -> ImageSummary
 mkImageSummary imageSummaryId imageSummaryParentId imageSummaryRepoTags imageSummaryRepoDigests imageSummaryCreated imageSummarySize imageSummarySharedSize imageSummaryVirtualSize imageSummaryLabels imageSummaryContainers =
   ImageSummary
@@ -1601,7 +1601,7 @@ data InlineResponse200 = InlineResponse200
   , inlineResponse200SizeRootFs :: !(Maybe Integer) -- ^ "SizeRootFs" - The total size of all the files in this container.
   , inlineResponse200Mounts :: !(Maybe [MountPoint]) -- ^ "Mounts"
   , inlineResponse200Config :: !(Maybe Config) -- ^ "Config"
-  , inlineResponse200NetworkSettings :: !(Maybe NetworkConfig) -- ^ "NetworkSettings"
+  , inlineResponse200NetworkSettings :: !(Maybe NetworkConfig2) -- ^ "NetworkSettings"
   } deriving (P.Show, P.Eq, P.Typeable)
 
 -- | FromJSON InlineResponse200
@@ -2898,7 +2898,7 @@ mkInlineResponse2013 =
 -- | Mount
 data Mount = Mount
   { mountTarget :: !(Maybe Text) -- ^ "Target" - Container path.
-  , mountType :: !(Maybe E'Type2) -- ^ "Type" - The mount type. Available types:  - &#x60;bind&#x60; Mounts a file or directory from the host into the container. Must exist prior to creating the container. - &#x60;volume&#x60; Creates a volume with the given name and options (or uses a pre-existing volume with the same name and options). These are **not** removed when the container is removed. - &#x60;tmpfs&#x60; Create a tmpfs with the given options. The mount source cannot be specified for tmpfs. 
+  , mountType :: !(Maybe E'Type2) -- ^ "Type" - The mount type. Available types:  - &#x60;bind&#x60; Mounts a file or directory from the host into the container. Must exist prior to creating the container. - &#x60;volume&#x60; Creates a volume with the given name and options (or uses a pre-existing volume with the same name and options). These are **not** removed when the container is removed. - &#x60;tmpfs&#x60; Create a tmpfs with the given options. The mount source cannot be specified for tmpfs.
   , mountReadOnly :: !(Maybe Bool) -- ^ "ReadOnly" - Whether the mount should be read-only.
   , mountBindOptions :: !(Maybe A.Value) -- ^ "BindOptions" - Optional configuration for the &#x60;bind&#x60; type.
   , mountVolumeOptions :: !(Maybe MountVolumeOptions) -- ^ "VolumeOptions"
@@ -3590,10 +3590,10 @@ instance A.ToJSON Plugin where
 
 -- | Construct a value of type 'Plugin' (by applying it's required fields, if any)
 mkPlugin
-  :: Text -- ^ 'pluginName' 
+  :: Text -- ^ 'pluginName'
   -> Bool -- ^ 'pluginEnabled': True when the plugin is running. False when the plugin is not running, only installed.
-  -> PluginSettings -- ^ 'pluginSettings' 
-  -> PluginConfig -- ^ 'pluginConfig' 
+  -> PluginSettings -- ^ 'pluginSettings'
+  -> PluginConfig -- ^ 'pluginConfig'
   -> Plugin
 mkPlugin pluginName pluginEnabled pluginSettings pluginConfig =
   Plugin
@@ -3663,17 +3663,17 @@ instance A.ToJSON PluginConfig where
 
 -- | Construct a value of type 'PluginConfig' (by applying it's required fields, if any)
 mkPluginConfig
-  :: Text -- ^ 'pluginConfigDescription' 
-  -> Text -- ^ 'pluginConfigDocumentation' 
-  -> PluginConfigInterface -- ^ 'pluginConfigInterface' 
-  -> [Text] -- ^ 'pluginConfigEntrypoint' 
-  -> Text -- ^ 'pluginConfigWorkDir' 
-  -> PluginConfigNetwork -- ^ 'pluginConfigNetwork' 
-  -> PluginConfigLinux -- ^ 'pluginConfigLinux' 
-  -> Text -- ^ 'pluginConfigPropagatedMount' 
-  -> [PluginMount] -- ^ 'pluginConfigMounts' 
-  -> [PluginEnv] -- ^ 'pluginConfigEnv' 
-  -> PluginConfigArgs -- ^ 'pluginConfigArgs' 
+  :: Text -- ^ 'pluginConfigDescription'
+  -> Text -- ^ 'pluginConfigDocumentation'
+  -> PluginConfigInterface -- ^ 'pluginConfigInterface'
+  -> [Text] -- ^ 'pluginConfigEntrypoint'
+  -> Text -- ^ 'pluginConfigWorkDir'
+  -> PluginConfigNetwork -- ^ 'pluginConfigNetwork'
+  -> PluginConfigLinux -- ^ 'pluginConfigLinux'
+  -> Text -- ^ 'pluginConfigPropagatedMount'
+  -> [PluginMount] -- ^ 'pluginConfigMounts'
+  -> [PluginEnv] -- ^ 'pluginConfigEnv'
+  -> PluginConfigArgs -- ^ 'pluginConfigArgs'
   -> PluginConfig
 mkPluginConfig pluginConfigDescription pluginConfigDocumentation pluginConfigInterface pluginConfigEntrypoint pluginConfigWorkDir pluginConfigNetwork pluginConfigLinux pluginConfigPropagatedMount pluginConfigMounts pluginConfigEnv pluginConfigArgs =
   PluginConfig
@@ -3723,10 +3723,10 @@ instance A.ToJSON PluginConfigArgs where
 
 -- | Construct a value of type 'PluginConfigArgs' (by applying it's required fields, if any)
 mkPluginConfigArgs
-  :: Text -- ^ 'pluginConfigArgsName' 
-  -> Text -- ^ 'pluginConfigArgsDescription' 
-  -> [Text] -- ^ 'pluginConfigArgsSettable' 
-  -> [Text] -- ^ 'pluginConfigArgsValue' 
+  :: Text -- ^ 'pluginConfigArgsName'
+  -> Text -- ^ 'pluginConfigArgsDescription'
+  -> [Text] -- ^ 'pluginConfigArgsSettable'
+  -> [Text] -- ^ 'pluginConfigArgsValue'
   -> PluginConfigArgs
 mkPluginConfigArgs pluginConfigArgsName pluginConfigArgsDescription pluginConfigArgsSettable pluginConfigArgsValue =
   PluginConfigArgs
@@ -3762,8 +3762,8 @@ instance A.ToJSON PluginConfigInterface where
 
 -- | Construct a value of type 'PluginConfigInterface' (by applying it's required fields, if any)
 mkPluginConfigInterface
-  :: [PluginInterfaceType] -- ^ 'pluginConfigInterfaceTypes' 
-  -> Text -- ^ 'pluginConfigInterfaceSocket' 
+  :: [PluginInterfaceType] -- ^ 'pluginConfigInterfaceTypes'
+  -> Text -- ^ 'pluginConfigInterfaceSocket'
   -> PluginConfigInterface
 mkPluginConfigInterface pluginConfigInterfaceTypes pluginConfigInterfaceSocket =
   PluginConfigInterface
@@ -3799,9 +3799,9 @@ instance A.ToJSON PluginConfigLinux where
 
 -- | Construct a value of type 'PluginConfigLinux' (by applying it's required fields, if any)
 mkPluginConfigLinux
-  :: [Text] -- ^ 'pluginConfigLinuxCapabilities' 
-  -> Bool -- ^ 'pluginConfigLinuxAllowAllDevices' 
-  -> [PluginDevice] -- ^ 'pluginConfigLinuxDevices' 
+  :: [Text] -- ^ 'pluginConfigLinuxCapabilities'
+  -> Bool -- ^ 'pluginConfigLinuxAllowAllDevices'
+  -> [PluginDevice] -- ^ 'pluginConfigLinuxDevices'
   -> PluginConfigLinux
 mkPluginConfigLinux pluginConfigLinuxCapabilities pluginConfigLinuxAllowAllDevices pluginConfigLinuxDevices =
   PluginConfigLinux
@@ -3832,7 +3832,7 @@ instance A.ToJSON PluginConfigNetwork where
 
 -- | Construct a value of type 'PluginConfigNetwork' (by applying it's required fields, if any)
 mkPluginConfigNetwork
-  :: Text -- ^ 'pluginConfigNetworkType' 
+  :: Text -- ^ 'pluginConfigNetworkType'
   -> PluginConfigNetwork
 mkPluginConfigNetwork pluginConfigNetworkType =
   PluginConfigNetwork
@@ -3934,10 +3934,10 @@ instance A.ToJSON PluginDevice where
 
 -- | Construct a value of type 'PluginDevice' (by applying it's required fields, if any)
 mkPluginDevice
-  :: Text -- ^ 'pluginDeviceName' 
-  -> Text -- ^ 'pluginDeviceDescription' 
-  -> [Text] -- ^ 'pluginDeviceSettable' 
-  -> Text -- ^ 'pluginDevicePath' 
+  :: Text -- ^ 'pluginDeviceName'
+  -> Text -- ^ 'pluginDeviceDescription'
+  -> [Text] -- ^ 'pluginDeviceSettable'
+  -> Text -- ^ 'pluginDevicePath'
   -> PluginDevice
 mkPluginDevice pluginDeviceName pluginDeviceDescription pluginDeviceSettable pluginDevicePath =
   PluginDevice
@@ -3978,10 +3978,10 @@ instance A.ToJSON PluginEnv where
 
 -- | Construct a value of type 'PluginEnv' (by applying it's required fields, if any)
 mkPluginEnv
-  :: Text -- ^ 'pluginEnvName' 
-  -> Text -- ^ 'pluginEnvDescription' 
-  -> [Text] -- ^ 'pluginEnvSettable' 
-  -> Text -- ^ 'pluginEnvValue' 
+  :: Text -- ^ 'pluginEnvName'
+  -> Text -- ^ 'pluginEnvDescription'
+  -> [Text] -- ^ 'pluginEnvSettable'
+  -> Text -- ^ 'pluginEnvValue'
   -> PluginEnv
 mkPluginEnv pluginEnvName pluginEnvDescription pluginEnvSettable pluginEnvValue =
   PluginEnv
@@ -4019,9 +4019,9 @@ instance A.ToJSON PluginInterfaceType where
 
 -- | Construct a value of type 'PluginInterfaceType' (by applying it's required fields, if any)
 mkPluginInterfaceType
-  :: Text -- ^ 'pluginInterfaceTypePrefix' 
-  -> Text -- ^ 'pluginInterfaceTypeCapability' 
-  -> Text -- ^ 'pluginInterfaceTypeVersion' 
+  :: Text -- ^ 'pluginInterfaceTypePrefix'
+  -> Text -- ^ 'pluginInterfaceTypeCapability'
+  -> Text -- ^ 'pluginInterfaceTypeVersion'
   -> PluginInterfaceType
 mkPluginInterfaceType pluginInterfaceTypePrefix pluginInterfaceTypeCapability pluginInterfaceTypeVersion =
   PluginInterfaceType
@@ -4070,13 +4070,13 @@ instance A.ToJSON PluginMount where
 
 -- | Construct a value of type 'PluginMount' (by applying it's required fields, if any)
 mkPluginMount
-  :: Text -- ^ 'pluginMountName' 
-  -> Text -- ^ 'pluginMountDescription' 
-  -> [Text] -- ^ 'pluginMountSettable' 
-  -> Text -- ^ 'pluginMountSource' 
-  -> Text -- ^ 'pluginMountDestination' 
-  -> Text -- ^ 'pluginMountType' 
-  -> [Text] -- ^ 'pluginMountOptions' 
+  :: Text -- ^ 'pluginMountName'
+  -> Text -- ^ 'pluginMountDescription'
+  -> [Text] -- ^ 'pluginMountSettable'
+  -> Text -- ^ 'pluginMountSource'
+  -> Text -- ^ 'pluginMountDestination'
+  -> Text -- ^ 'pluginMountType'
+  -> [Text] -- ^ 'pluginMountOptions'
   -> PluginMount
 mkPluginMount pluginMountName pluginMountDescription pluginMountSettable pluginMountSource pluginMountDestination pluginMountType pluginMountOptions =
   PluginMount
@@ -4121,10 +4121,10 @@ instance A.ToJSON PluginSettings where
 
 -- | Construct a value of type 'PluginSettings' (by applying it's required fields, if any)
 mkPluginSettings
-  :: [PluginMount] -- ^ 'pluginSettingsMounts' 
-  -> [Text] -- ^ 'pluginSettingsEnv' 
-  -> [Text] -- ^ 'pluginSettingsArgs' 
-  -> [PluginDevice] -- ^ 'pluginSettingsDevices' 
+  :: [PluginMount] -- ^ 'pluginSettingsMounts'
+  -> [Text] -- ^ 'pluginSettingsEnv'
+  -> [Text] -- ^ 'pluginSettingsArgs'
+  -> [PluginDevice] -- ^ 'pluginSettingsDevices'
   -> PluginSettings
 mkPluginSettings pluginSettingsMounts pluginSettingsEnv pluginSettingsArgs pluginSettingsDevices =
   PluginSettings
@@ -4167,7 +4167,7 @@ instance A.ToJSON Port where
 -- | Construct a value of type 'Port' (by applying it's required fields, if any)
 mkPort
   :: Int -- ^ 'portPrivatePort': Port on the container
-  -> E'Type -- ^ 'portType' 
+  -> E'Type -- ^ 'portType'
   -> Port
 mkPort portPrivatePort portType =
   Port
@@ -4301,11 +4301,11 @@ data Resources = Resources
   , resourcesMemory :: !(Maybe Int) -- ^ "Memory" - Memory limit in bytes.
   , resourcesCgroupParent :: !(Maybe Text) -- ^ "CgroupParent" - Path to &#x60;cgroups&#x60; under which the container&#39;s &#x60;cgroup&#x60; is created. If the path is not absolute, the path is considered to be relative to the &#x60;cgroups&#x60; path of the init process. Cgroups are created if they do not already exist.
   , resourcesBlkioWeight :: !(Maybe Int) -- ^ "BlkioWeight" - Block IO weight (relative weight).
-  , resourcesBlkioWeightDevice :: !(Maybe [ResourcesBlkioWeightDevice]) -- ^ "BlkioWeightDevice" - Block IO weight (relative device weight) in the form &#x60;[{\&quot;Path\&quot;: \&quot;device_path\&quot;, \&quot;Weight\&quot;: weight}]&#x60;. 
-  , resourcesBlkioDeviceReadBps :: !(Maybe [ThrottleDevice]) -- ^ "BlkioDeviceReadBps" - Limit read rate (bytes per second) from a device, in the form &#x60;[{\&quot;Path\&quot;: \&quot;device_path\&quot;, \&quot;Rate\&quot;: rate}]&#x60;. 
-  , resourcesBlkioDeviceWriteBps :: !(Maybe [ThrottleDevice]) -- ^ "BlkioDeviceWriteBps" - Limit write rate (bytes per second) to a device, in the form &#x60;[{\&quot;Path\&quot;: \&quot;device_path\&quot;, \&quot;Rate\&quot;: rate}]&#x60;. 
-  , resourcesBlkioDeviceReadIOps :: !(Maybe [ThrottleDevice]) -- ^ "BlkioDeviceReadIOps" - Limit read rate (IO per second) from a device, in the form &#x60;[{\&quot;Path\&quot;: \&quot;device_path\&quot;, \&quot;Rate\&quot;: rate}]&#x60;. 
-  , resourcesBlkioDeviceWriteIOps :: !(Maybe [ThrottleDevice]) -- ^ "BlkioDeviceWriteIOps" - Limit write rate (IO per second) to a device, in the form &#x60;[{\&quot;Path\&quot;: \&quot;device_path\&quot;, \&quot;Rate\&quot;: rate}]&#x60;. 
+  , resourcesBlkioWeightDevice :: !(Maybe [ResourcesBlkioWeightDevice]) -- ^ "BlkioWeightDevice" - Block IO weight (relative device weight) in the form &#x60;[{\&quot;Path\&quot;: \&quot;device_path\&quot;, \&quot;Weight\&quot;: weight}]&#x60;.
+  , resourcesBlkioDeviceReadBps :: !(Maybe [ThrottleDevice]) -- ^ "BlkioDeviceReadBps" - Limit read rate (bytes per second) from a device, in the form &#x60;[{\&quot;Path\&quot;: \&quot;device_path\&quot;, \&quot;Rate\&quot;: rate}]&#x60;.
+  , resourcesBlkioDeviceWriteBps :: !(Maybe [ThrottleDevice]) -- ^ "BlkioDeviceWriteBps" - Limit write rate (bytes per second) to a device, in the form &#x60;[{\&quot;Path\&quot;: \&quot;device_path\&quot;, \&quot;Rate\&quot;: rate}]&#x60;.
+  , resourcesBlkioDeviceReadIOps :: !(Maybe [ThrottleDevice]) -- ^ "BlkioDeviceReadIOps" - Limit read rate (IO per second) from a device, in the form &#x60;[{\&quot;Path\&quot;: \&quot;device_path\&quot;, \&quot;Rate\&quot;: rate}]&#x60;.
+  , resourcesBlkioDeviceWriteIOps :: !(Maybe [ThrottleDevice]) -- ^ "BlkioDeviceWriteIOps" - Limit write rate (IO per second) to a device, in the form &#x60;[{\&quot;Path\&quot;: \&quot;device_path\&quot;, \&quot;Rate\&quot;: rate}]&#x60;.
   , resourcesCpuPeriod :: !(Maybe Integer) -- ^ "CpuPeriod" - The length of a CPU period in microseconds.
   , resourcesCpuQuota :: !(Maybe Integer) -- ^ "CpuQuota" - Microseconds of CPU time that the container can get in a CPU period.
   , resourcesCpuRealtimePeriod :: !(Maybe Integer) -- ^ "CpuRealtimePeriod" - The length of a CPU real-time period in microseconds. Set to 0 to allocate no time allocated to real-time tasks.
@@ -4321,9 +4321,9 @@ data Resources = Resources
   , resourcesNanoCpUs :: !(Maybe Integer) -- ^ "NanoCPUs" - CPU quota in units of 10&lt;sup&gt;-9&lt;/sup&gt; CPUs.
   , resourcesOomKillDisable :: !(Maybe Bool) -- ^ "OomKillDisable" - Disable OOM Killer for the container.
   , resourcesPidsLimit :: !(Maybe Integer) -- ^ "PidsLimit" - Tune a container&#39;s pids limit. Set -1 for unlimited.
-  , resourcesUlimits :: !(Maybe [ResourcesUlimits]) -- ^ "Ulimits" - A list of resource limits to set in the container. For example: &#x60;{\&quot;Name\&quot;: \&quot;nofile\&quot;, \&quot;Soft\&quot;: 1024, \&quot;Hard\&quot;: 2048}&#x60;\&quot; 
-  , resourcesCpuCount :: !(Maybe Integer) -- ^ "CpuCount" - The number of usable CPUs (Windows only).  On Windows Server containers, the processor resource controls are mutually exclusive. The order of precedence is &#x60;CPUCount&#x60; first, then &#x60;CPUShares&#x60;, and &#x60;CPUPercent&#x60; last. 
-  , resourcesCpuPercent :: !(Maybe Integer) -- ^ "CpuPercent" - The usable percentage of the available CPUs (Windows only).  On Windows Server containers, the processor resource controls are mutually exclusive. The order of precedence is &#x60;CPUCount&#x60; first, then &#x60;CPUShares&#x60;, and &#x60;CPUPercent&#x60; last. 
+  , resourcesUlimits :: !(Maybe [ResourcesUlimits]) -- ^ "Ulimits" - A list of resource limits to set in the container. For example: &#x60;{\&quot;Name\&quot;: \&quot;nofile\&quot;, \&quot;Soft\&quot;: 1024, \&quot;Hard\&quot;: 2048}&#x60;\&quot;
+  , resourcesCpuCount :: !(Maybe Integer) -- ^ "CpuCount" - The number of usable CPUs (Windows only).  On Windows Server containers, the processor resource controls are mutually exclusive. The order of precedence is &#x60;CPUCount&#x60; first, then &#x60;CPUShares&#x60;, and &#x60;CPUPercent&#x60; last.
+  , resourcesCpuPercent :: !(Maybe Integer) -- ^ "CpuPercent" - The usable percentage of the available CPUs (Windows only).  On Windows Server containers, the processor resource controls are mutually exclusive. The order of precedence is &#x60;CPUCount&#x60; first, then &#x60;CPUShares&#x60;, and &#x60;CPUPercent&#x60; last.
   , resourcesIoMaximumIOps :: !(Maybe Integer) -- ^ "IOMaximumIOps" - Maximum IOps for the container system drive (Windows only)
   , resourcesIoMaximumBandwidth :: !(Maybe Integer) -- ^ "IOMaximumBandwidth" - Maximum IO in bytes per second for the container system drive (Windows only)
   } deriving (P.Show, P.Eq, P.Typeable)
@@ -4504,9 +4504,9 @@ mkResourcesUlimits =
 
 -- ** RestartPolicy
 -- | RestartPolicy
--- The behavior to apply when the container exits. The default is not to restart.  An ever increasing delay (double the previous delay, starting at 100ms) is added before each restart to prevent flooding the server. 
+-- The behavior to apply when the container exits. The default is not to restart.  An ever increasing delay (double the previous delay, starting at 100ms) is added before each restart to prevent flooding the server.
 data RestartPolicy = RestartPolicy
-  { restartPolicyName :: !(Maybe E'Name) -- ^ "Name" - - &#x60;always&#x60; Always restart - &#x60;unless-stopped&#x60; Restart always except when the user has manually stopped the container - &#x60;on-failure&#x60; Restart only when the container exit code is non-zero 
+  { restartPolicyName :: !(Maybe E'Name) -- ^ "Name" - - &#x60;always&#x60; Always restart - &#x60;unless-stopped&#x60; Restart always except when the user has manually stopped the container - &#x60;on-failure&#x60; Restart only when the container exit code is non-zero
   , restartPolicyMaximumRetryCount :: !(Maybe Int) -- ^ "MaximumRetryCount" - If &#x60;on-failure&#x60; is used, the number of times to retry before giving up
   } deriving (P.Show, P.Eq, P.Typeable)
 
@@ -5183,8 +5183,8 @@ data SwarmSpecRaft = SwarmSpecRaft
   { swarmSpecRaftSnapshotInterval :: !(Maybe Integer) -- ^ "SnapshotInterval" - The number of log entries between snapshots.
   , swarmSpecRaftKeepOldSnapshots :: !(Maybe Integer) -- ^ "KeepOldSnapshots" - The number of snapshots to keep beyond the current snapshot.
   , swarmSpecRaftLogEntriesForSlowFollowers :: !(Maybe Integer) -- ^ "LogEntriesForSlowFollowers" - The number of log entries to keep around to sync up slow followers after a snapshot is created.
-  , swarmSpecRaftElectionTick :: !(Maybe Int) -- ^ "ElectionTick" - The number of ticks that a follower will wait for a message from the leader before becoming a candidate and starting an election. &#x60;ElectionTick&#x60; must be greater than &#x60;HeartbeatTick&#x60;.  A tick currently defaults to one second, so these translate directly to seconds currently, but this is NOT guaranteed. 
-  , swarmSpecRaftHeartbeatTick :: !(Maybe Int) -- ^ "HeartbeatTick" - The number of ticks between heartbeats. Every HeartbeatTick ticks, the leader will send a heartbeat to the followers.  A tick currently defaults to one second, so these translate directly to seconds currently, but this is NOT guaranteed. 
+  , swarmSpecRaftElectionTick :: !(Maybe Int) -- ^ "ElectionTick" - The number of ticks that a follower will wait for a message from the leader before becoming a candidate and starting an election. &#x60;ElectionTick&#x60; must be greater than &#x60;HeartbeatTick&#x60;.  A tick currently defaults to one second, so these translate directly to seconds currently, but this is NOT guaranteed.
+  , swarmSpecRaftHeartbeatTick :: !(Maybe Int) -- ^ "HeartbeatTick" - The number of ticks between heartbeats. Every HeartbeatTick ticks, the leader will send a heartbeat to the followers.  A tick currently defaults to one second, so these translate directly to seconds currently, but this is NOT guaranteed.
   } deriving (P.Show, P.Eq, P.Typeable)
 
 -- | FromJSON SwarmSpecRaft
@@ -5252,7 +5252,7 @@ mkSwarmSpecTaskDefaults =
 
 -- ** SwarmSpecTaskDefaultsLogDriver
 -- | SwarmSpecTaskDefaultsLogDriver
--- The log driver to use for tasks created in the orchestrator if unspecified by a service.  Updating this value will only have an affect on new tasks. Old tasks will continue use their previously configured log driver until recreated. 
+-- The log driver to use for tasks created in the orchestrator if unspecified by a service.  Updating this value will only have an affect on new tasks. Old tasks will continue use their previously configured log driver until recreated.
 data SwarmSpecTaskDefaultsLogDriver = SwarmSpecTaskDefaultsLogDriver
   { swarmSpecTaskDefaultsLogDriverName :: !(Maybe Text) -- ^ "Name"
   , swarmSpecTaskDefaultsLogDriverOptions :: !(Maybe (Map.Map String Text)) -- ^ "Options"
@@ -5864,7 +5864,7 @@ data Volume = Volume
   { volumeName :: !(Text) -- ^ /Required/ "Name" - Name of the volume.
   , volumeDriver :: !(Text) -- ^ /Required/ "Driver" - Name of the volume driver used by the volume.
   , volumeMountpoint :: !(Text) -- ^ /Required/ "Mountpoint" - Mount path of the volume on the host.
-  , volumeStatus :: !(Maybe (Map.Map String A.Value)) -- ^ "Status" - Low-level details about the volume, provided by the volume driver. Details are returned as a map with key/value pairs: &#x60;{\&quot;key\&quot;:\&quot;value\&quot;,\&quot;key2\&quot;:\&quot;value2\&quot;}&#x60;.  The &#x60;Status&#x60; field is optional, and is omitted if the volume driver does not support this feature. 
+  , volumeStatus :: !(Maybe (Map.Map String A.Value)) -- ^ "Status" - Low-level details about the volume, provided by the volume driver. Details are returned as a map with key/value pairs: &#x60;{\&quot;key\&quot;:\&quot;value\&quot;,\&quot;key2\&quot;:\&quot;value2\&quot;}&#x60;.  The &#x60;Status&#x60; field is optional, and is omitted if the volume driver does not support this feature.
   , volumeLabels :: !((Map.Map String Text)) -- ^ /Required/ "Labels" - User-defined key/value metadata.
   , volumeScope :: !(E'Scope) -- ^ /Required/ "Scope" - The level at which the volume exists. Either &#x60;global&#x60; for cluster-wide, or &#x60;local&#x60; for machine level.
   , volumeOptions :: !((Map.Map String Text)) -- ^ /Required/ "Options" - The driver specific options used when creating the volume.
@@ -6002,11 +6002,11 @@ data HostConfig = HostConfig
   , hostConfigMemory :: !(Maybe Int) -- ^ "Memory" - Memory limit in bytes.
   , hostConfigCgroupParent :: !(Maybe Text) -- ^ "CgroupParent" - Path to &#x60;cgroups&#x60; under which the container&#39;s &#x60;cgroup&#x60; is created. If the path is not absolute, the path is considered to be relative to the &#x60;cgroups&#x60; path of the init process. Cgroups are created if they do not already exist.
   , hostConfigBlkioWeight :: !(Maybe Int) -- ^ "BlkioWeight" - Block IO weight (relative weight).
-  , hostConfigBlkioWeightDevice :: !(Maybe [ResourcesBlkioWeightDevice]) -- ^ "BlkioWeightDevice" - Block IO weight (relative device weight) in the form &#x60;[{\&quot;Path\&quot;: \&quot;device_path\&quot;, \&quot;Weight\&quot;: weight}]&#x60;. 
-  , hostConfigBlkioDeviceReadBps :: !(Maybe [ThrottleDevice]) -- ^ "BlkioDeviceReadBps" - Limit read rate (bytes per second) from a device, in the form &#x60;[{\&quot;Path\&quot;: \&quot;device_path\&quot;, \&quot;Rate\&quot;: rate}]&#x60;. 
-  , hostConfigBlkioDeviceWriteBps :: !(Maybe [ThrottleDevice]) -- ^ "BlkioDeviceWriteBps" - Limit write rate (bytes per second) to a device, in the form &#x60;[{\&quot;Path\&quot;: \&quot;device_path\&quot;, \&quot;Rate\&quot;: rate}]&#x60;. 
-  , hostConfigBlkioDeviceReadIOps :: !(Maybe [ThrottleDevice]) -- ^ "BlkioDeviceReadIOps" - Limit read rate (IO per second) from a device, in the form &#x60;[{\&quot;Path\&quot;: \&quot;device_path\&quot;, \&quot;Rate\&quot;: rate}]&#x60;. 
-  , hostConfigBlkioDeviceWriteIOps :: !(Maybe [ThrottleDevice]) -- ^ "BlkioDeviceWriteIOps" - Limit write rate (IO per second) to a device, in the form &#x60;[{\&quot;Path\&quot;: \&quot;device_path\&quot;, \&quot;Rate\&quot;: rate}]&#x60;. 
+  , hostConfigBlkioWeightDevice :: !(Maybe [ResourcesBlkioWeightDevice]) -- ^ "BlkioWeightDevice" - Block IO weight (relative device weight) in the form &#x60;[{\&quot;Path\&quot;: \&quot;device_path\&quot;, \&quot;Weight\&quot;: weight}]&#x60;.
+  , hostConfigBlkioDeviceReadBps :: !(Maybe [ThrottleDevice]) -- ^ "BlkioDeviceReadBps" - Limit read rate (bytes per second) from a device, in the form &#x60;[{\&quot;Path\&quot;: \&quot;device_path\&quot;, \&quot;Rate\&quot;: rate}]&#x60;.
+  , hostConfigBlkioDeviceWriteBps :: !(Maybe [ThrottleDevice]) -- ^ "BlkioDeviceWriteBps" - Limit write rate (bytes per second) to a device, in the form &#x60;[{\&quot;Path\&quot;: \&quot;device_path\&quot;, \&quot;Rate\&quot;: rate}]&#x60;.
+  , hostConfigBlkioDeviceReadIOps :: !(Maybe [ThrottleDevice]) -- ^ "BlkioDeviceReadIOps" - Limit read rate (IO per second) from a device, in the form &#x60;[{\&quot;Path\&quot;: \&quot;device_path\&quot;, \&quot;Rate\&quot;: rate}]&#x60;.
+  , hostConfigBlkioDeviceWriteIOps :: !(Maybe [ThrottleDevice]) -- ^ "BlkioDeviceWriteIOps" - Limit write rate (IO per second) to a device, in the form &#x60;[{\&quot;Path\&quot;: \&quot;device_path\&quot;, \&quot;Rate\&quot;: rate}]&#x60;.
   , hostConfigCpuPeriod :: !(Maybe Integer) -- ^ "CpuPeriod" - The length of a CPU period in microseconds.
   , hostConfigCpuQuota :: !(Maybe Integer) -- ^ "CpuQuota" - Microseconds of CPU time that the container can get in a CPU period.
   , hostConfigCpuRealtimePeriod :: !(Maybe Integer) -- ^ "CpuRealtimePeriod" - The length of a CPU real-time period in microseconds. Set to 0 to allocate no time allocated to real-time tasks.
@@ -6022,12 +6022,12 @@ data HostConfig = HostConfig
   , hostConfigNanoCpUs :: !(Maybe Integer) -- ^ "NanoCPUs" - CPU quota in units of 10&lt;sup&gt;-9&lt;/sup&gt; CPUs.
   , hostConfigOomKillDisable :: !(Maybe Bool) -- ^ "OomKillDisable" - Disable OOM Killer for the container.
   , hostConfigPidsLimit :: !(Maybe Integer) -- ^ "PidsLimit" - Tune a container&#39;s pids limit. Set -1 for unlimited.
-  , hostConfigUlimits :: !(Maybe [ResourcesUlimits]) -- ^ "Ulimits" - A list of resource limits to set in the container. For example: &#x60;{\&quot;Name\&quot;: \&quot;nofile\&quot;, \&quot;Soft\&quot;: 1024, \&quot;Hard\&quot;: 2048}&#x60;\&quot; 
-  , hostConfigCpuCount :: !(Maybe Integer) -- ^ "CpuCount" - The number of usable CPUs (Windows only).  On Windows Server containers, the processor resource controls are mutually exclusive. The order of precedence is &#x60;CPUCount&#x60; first, then &#x60;CPUShares&#x60;, and &#x60;CPUPercent&#x60; last. 
-  , hostConfigCpuPercent :: !(Maybe Integer) -- ^ "CpuPercent" - The usable percentage of the available CPUs (Windows only).  On Windows Server containers, the processor resource controls are mutually exclusive. The order of precedence is &#x60;CPUCount&#x60; first, then &#x60;CPUShares&#x60;, and &#x60;CPUPercent&#x60; last. 
+  , hostConfigUlimits :: !(Maybe [ResourcesUlimits]) -- ^ "Ulimits" - A list of resource limits to set in the container. For example: &#x60;{\&quot;Name\&quot;: \&quot;nofile\&quot;, \&quot;Soft\&quot;: 1024, \&quot;Hard\&quot;: 2048}&#x60;\&quot;
+  , hostConfigCpuCount :: !(Maybe Integer) -- ^ "CpuCount" - The number of usable CPUs (Windows only).  On Windows Server containers, the processor resource controls are mutually exclusive. The order of precedence is &#x60;CPUCount&#x60; first, then &#x60;CPUShares&#x60;, and &#x60;CPUPercent&#x60; last.
+  , hostConfigCpuPercent :: !(Maybe Integer) -- ^ "CpuPercent" - The usable percentage of the available CPUs (Windows only).  On Windows Server containers, the processor resource controls are mutually exclusive. The order of precedence is &#x60;CPUCount&#x60; first, then &#x60;CPUShares&#x60;, and &#x60;CPUPercent&#x60; last.
   , hostConfigIoMaximumIOps :: !(Maybe Integer) -- ^ "IOMaximumIOps" - Maximum IOps for the container system drive (Windows only)
   , hostConfigIoMaximumBandwidth :: !(Maybe Integer) -- ^ "IOMaximumBandwidth" - Maximum IO in bytes per second for the container system drive (Windows only)
-  , hostConfigBinds :: !(Maybe [Text]) -- ^ "Binds" - A list of volume bindings for this container. Each volume binding is a string in one of these forms:  - &#x60;host-src:container-dest&#x60; to bind-mount a host path into the container. Both &#x60;host-src&#x60;, and &#x60;container-dest&#x60; must be an _absolute_ path. - &#x60;host-src:container-dest:ro&#x60; to make the bind-mount read-only inside the container. Both &#x60;host-src&#x60;, and &#x60;container-dest&#x60; must be an _absolute_ path. - &#x60;volume-name:container-dest&#x60; to bind-mount a volume managed by a volume driver into the container. &#x60;container-dest&#x60; must be an _absolute_ path. - &#x60;volume-name:container-dest:ro&#x60; to mount the volume read-only inside the container.  &#x60;container-dest&#x60; must be an _absolute_ path. 
+  , hostConfigBinds :: !(Maybe [Text]) -- ^ "Binds" - A list of volume bindings for this container. Each volume binding is a string in one of these forms:  - &#x60;host-src:container-dest&#x60; to bind-mount a host path into the container. Both &#x60;host-src&#x60;, and &#x60;container-dest&#x60; must be an _absolute_ path. - &#x60;host-src:container-dest:ro&#x60; to make the bind-mount read-only inside the container. Both &#x60;host-src&#x60;, and &#x60;container-dest&#x60; must be an _absolute_ path. - &#x60;volume-name:container-dest&#x60; to bind-mount a volume managed by a volume driver into the container. &#x60;container-dest&#x60; must be an _absolute_ path. - &#x60;volume-name:container-dest:ro&#x60; to mount the volume read-only inside the container.  &#x60;container-dest&#x60; must be an _absolute_ path.
   , hostConfigContainerIdFile :: !(Maybe Text) -- ^ "ContainerIDFile" - Path to a file where the container ID is written
   , hostConfigLogConfig :: !(Maybe HostConfigLogConfig) -- ^ "LogConfig"
   , hostConfigNetworkMode :: !(Maybe Text) -- ^ "NetworkMode" - Network mode to use for this container. Supported standard values are: &#x60;bridge&#x60;, &#x60;host&#x60;, &#x60;none&#x60;, and &#x60;container:&lt;name|id&gt;&#x60;. Any other value is taken as a custom network&#39;s name to which this container should connect to.
@@ -6042,23 +6042,23 @@ data HostConfig = HostConfig
   , hostConfigDns :: !(Maybe [Text]) -- ^ "Dns" - A list of DNS servers for the container to use.
   , hostConfigDnsOptions :: !(Maybe [Text]) -- ^ "DnsOptions" - A list of DNS options.
   , hostConfigDnsSearch :: !(Maybe [Text]) -- ^ "DnsSearch" - A list of DNS search domains.
-  , hostConfigExtraHosts :: !(Maybe [Text]) -- ^ "ExtraHosts" - A list of hostnames/IP mappings to add to the container&#39;s &#x60;/etc/hosts&#x60; file. Specified in the form &#x60;[\&quot;hostname:IP\&quot;]&#x60;. 
+  , hostConfigExtraHosts :: !(Maybe [Text]) -- ^ "ExtraHosts" - A list of hostnames/IP mappings to add to the container&#39;s &#x60;/etc/hosts&#x60; file. Specified in the form &#x60;[\&quot;hostname:IP\&quot;]&#x60;.
   , hostConfigGroupAdd :: !(Maybe [Text]) -- ^ "GroupAdd" - A list of additional groups that the container process will run as.
   , hostConfigIpcMode :: !(Maybe Text) -- ^ "IpcMode" - IPC namespace to use for the container.
   , hostConfigCgroup :: !(Maybe Text) -- ^ "Cgroup" - Cgroup to use for the container.
   , hostConfigLinks :: !(Maybe [Text]) -- ^ "Links" - A list of links for the container in the form &#x60;container_name:alias&#x60;.
   , hostConfigOomScoreAdj :: !(Maybe Int) -- ^ "OomScoreAdj" - An integer value containing the score given to the container in order to tune OOM killer preferences.
-  , hostConfigPidMode :: !(Maybe Text) -- ^ "PidMode" - Set the PID (Process) Namespace mode for the container. It can be either:  - &#x60;\&quot;container:&lt;name|id&gt;\&quot;&#x60;: joins another container&#39;s PID namespace - &#x60;\&quot;host\&quot;&#x60;: use the host&#39;s PID namespace inside the container 
+  , hostConfigPidMode :: !(Maybe Text) -- ^ "PidMode" - Set the PID (Process) Namespace mode for the container. It can be either:  - &#x60;\&quot;container:&lt;name|id&gt;\&quot;&#x60;: joins another container&#39;s PID namespace - &#x60;\&quot;host\&quot;&#x60;: use the host&#39;s PID namespace inside the container
   , hostConfigPrivileged :: !(Maybe Bool) -- ^ "Privileged" - Gives the container full access to the host.
   , hostConfigPublishAllPorts :: !(Maybe Bool) -- ^ "PublishAllPorts" - Allocates a random host port for all of a container&#39;s exposed ports.
   , hostConfigReadonlyRootfs :: !(Maybe Bool) -- ^ "ReadonlyRootfs" - Mount the container&#39;s root filesystem as read only.
   , hostConfigSecurityOpt :: !(Maybe [Text]) -- ^ "SecurityOpt" - A list of string values to customize labels for MLS systems, such as SELinux.
-  , hostConfigStorageOpt :: !(Maybe (Map.Map String Text)) -- ^ "StorageOpt" - Storage driver options for this container, in the form &#x60;{\&quot;size\&quot;: \&quot;120G\&quot;}&#x60;. 
-  , hostConfigTmpfs :: !(Maybe (Map.Map String Text)) -- ^ "Tmpfs" - A map of container directories which should be replaced by tmpfs mounts, and their corresponding mount options. For example: &#x60;{ \&quot;/run\&quot;: \&quot;rw,noexec,nosuid,size&#x3D;65536k\&quot; }&#x60;. 
+  , hostConfigStorageOpt :: !(Maybe (Map.Map String Text)) -- ^ "StorageOpt" - Storage driver options for this container, in the form &#x60;{\&quot;size\&quot;: \&quot;120G\&quot;}&#x60;.
+  , hostConfigTmpfs :: !(Maybe (Map.Map String Text)) -- ^ "Tmpfs" - A map of container directories which should be replaced by tmpfs mounts, and their corresponding mount options. For example: &#x60;{ \&quot;/run\&quot;: \&quot;rw,noexec,nosuid,size&#x3D;65536k\&quot; }&#x60;.
   , hostConfigUtsMode :: !(Maybe Text) -- ^ "UTSMode" - UTS namespace to use for the container.
   , hostConfigUsernsMode :: !(Maybe Text) -- ^ "UsernsMode" - Sets the usernamespace mode for the container when usernamespace remapping option is enabled.
   , hostConfigShmSize :: !(Maybe Int) -- ^ "ShmSize" - Size of &#x60;/dev/shm&#x60; in bytes. If omitted, the system uses 64MB.
-  , hostConfigSysctls :: !(Maybe (Map.Map String Text)) -- ^ "Sysctls" - A list of kernel parameters (sysctls) to set in the container. For example: &#x60;{\&quot;net.ipv4.ip_forward\&quot;: \&quot;1\&quot;}&#x60; 
+  , hostConfigSysctls :: !(Maybe (Map.Map String Text)) -- ^ "Sysctls" - A list of kernel parameters (sysctls) to set in the container. For example: &#x60;{\&quot;net.ipv4.ip_forward\&quot;: \&quot;1\&quot;}&#x60;
   , hostConfigRuntime :: !(Maybe Text) -- ^ "Runtime" - Runtime to use with this container.
   , hostConfigConsoleSize :: !(Maybe [Int]) -- ^ "ConsoleSize" - Initial console size, as an &#x60;[height, width]&#x60; array. (Windows only)
   , hostConfigIsolation :: !(Maybe E'Isolation) -- ^ "Isolation" - Isolation technology of the container. (Windows only)
@@ -6281,7 +6281,7 @@ mkHostConfig =
 
 -- ** E'Availability
 
--- | Enum of 'Text' . 
+-- | Enum of 'Text' .
 -- Availability of the node.
 data E'Availability
   = E'Availability'Active -- ^ @"active"@
@@ -6313,7 +6313,7 @@ toE'Availability = \case
 
 -- ** E'Condition
 
--- | Enum of 'Text' . 
+-- | Enum of 'Text' .
 -- Condition for restart.
 data E'Condition
   = E'Condition'None -- ^ @"none"@
@@ -6370,7 +6370,7 @@ toE'ContentType = \case
 
 -- ** E'FailureAction
 
--- | Enum of 'Text' . 
+-- | Enum of 'Text' .
 -- Action to take if an updated task fails to run, or stops running during the update.
 data E'FailureAction
   = E'FailureAction'Continue -- ^ @"continue"@
@@ -6399,7 +6399,7 @@ toE'FailureAction = \case
 
 -- ** E'Isolation
 
--- | Enum of 'Text' . 
+-- | Enum of 'Text' .
 -- Isolation technology of the container. (Windows only)
 data E'Isolation
   = E'Isolation'Default -- ^ @"default"@
@@ -6431,7 +6431,7 @@ toE'Isolation = \case
 
 -- ** E'Mode
 
--- | Enum of 'Text' . 
+-- | Enum of 'Text' .
 -- The mode of resolution to use for internal load balancing between tasks.
 data E'Mode
   = E'Mode'Vip -- ^ @"vip"@
@@ -6460,8 +6460,8 @@ toE'Mode = \case
 
 -- ** E'Name
 
--- | Enum of 'Text' . 
--- - `always` Always restart - `unless-stopped` Restart always except when the user has manually stopped the container - `on-failure` Restart only when the container exit code is non-zero 
+-- | Enum of 'Text' .
+-- - `always` Always restart - `unless-stopped` Restart always except when the user has manually stopped the container - `on-failure` Restart only when the container exit code is non-zero
 data E'Name
   = E'Name'Always -- ^ @"always"@
   | E'Name'Unless_stopped -- ^ @"unless-stopped"@
@@ -6492,7 +6492,7 @@ toE'Name = \case
 
 -- ** E'Protocol
 
--- | Enum of 'Text' . 
+-- | Enum of 'Text' .
 -- Protocol for communication with the external CA (currently only `cfssl` is supported).
 data E'Protocol
   = E'Protocol'Cfssl -- ^ @"cfssl"@
@@ -6518,7 +6518,7 @@ toE'Protocol = \case
 
 -- ** E'Role
 
--- | Enum of 'Text' . 
+-- | Enum of 'Text' .
 -- Role of the node.
 data E'Role
   = E'Role'Worker -- ^ @"worker"@
@@ -6547,7 +6547,7 @@ toE'Role = \case
 
 -- ** E'Scope
 
--- | Enum of 'Text' . 
+-- | Enum of 'Text' .
 -- The level at which the volume exists. Either `global` for cluster-wide, or `local` for machine level.
 data E'Scope
   = E'Scope'Local -- ^ @"local"@
@@ -6635,8 +6635,8 @@ toE'Type = \case
 
 -- ** E'Type2
 
--- | Enum of 'Text' . 
--- The mount type. Available types:  - `bind` Mounts a file or directory from the host into the container. Must exist prior to creating the container. - `volume` Creates a volume with the given name and options (or uses a pre-existing volume with the same name and options). These are **not** removed when the container is removed. - `tmpfs` Create a tmpfs with the given options. The mount source cannot be specified for tmpfs. 
+-- | Enum of 'Text' .
+-- The mount type. Available types:  - `bind` Mounts a file or directory from the host into the container. Must exist prior to creating the container. - `volume` Creates a volume with the given name and options (or uses a pre-existing volume with the same name and options). These are **not** removed when the container is removed. - `tmpfs` Create a tmpfs with the given options. The mount source cannot be specified for tmpfs.
 data E'Type2
   = E'Type2'Bind -- ^ @"bind"@
   | E'Type2'Volume -- ^ @"volume"@
